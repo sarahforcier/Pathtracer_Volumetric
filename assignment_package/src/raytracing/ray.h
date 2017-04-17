@@ -1,10 +1,13 @@
 #pragma once
 #include <globals.h>
 
+class Medium;
+
 class Ray
 {
 public:
     Ray(const Point3f &o, const Vector3f &d);
+    ~Ray() {delete medium;}
     Ray(const glm::vec4 &o, const glm::vec4 &d);
     Ray(const Ray &r);
 
@@ -14,4 +17,6 @@ public:
 
     Point3f origin;
     Vector3f direction;
+    mutable float tMax;
+    const Medium* medium;
 };

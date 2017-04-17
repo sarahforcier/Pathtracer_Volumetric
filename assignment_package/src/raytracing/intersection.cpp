@@ -7,7 +7,7 @@ Intersection::Intersection():
     t(-1),
     tMax(INFINITY),
     objectHit(nullptr),
-    //mediumInterface(nullptr),
+    mediumInterface(nullptr),
     bsdf(nullptr),
     tangent(0.f), bitangent(0.f)
 {}

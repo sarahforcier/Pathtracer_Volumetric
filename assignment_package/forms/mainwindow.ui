@@ -98,6 +98,9 @@
           </item>
           <item row="1" column="1" colspan="2">
            <widget class="QComboBox" name="integratorSpinBox">
+            <property name="currentText">
+             <string>Naive</string>
+            </property>
             <item>
              <property name="text">
               <string>Naive</string>
@@ -105,12 +108,12 @@
             </item>
             <item>
              <property name="text">
-              <string>Direct Lighting</string>
+              <string>Volumetric</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Indirect Lighting</string>
+              <string>Direct Lighting</string>
              </property>
             </item>
             <item>
@@ -195,7 +198,7 @@
              <number>1000</number>
             </property>
             <property name="value">
-             <number>360</number>
+             <number>256</number>
             </property>
            </widget>
           </item>
@@ -211,8 +214,6 @@
           </item>
          </layout>
         </widget>
-        <zorder>layoutWidget</zorder>
-        <zorder>mygl</zorder>
        </widget>
       </item>
      </layout>

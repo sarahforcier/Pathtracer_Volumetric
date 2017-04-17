@@ -22,8 +22,8 @@ class QOpenGLTexture;
 
 enum IntegratorType
 {
+    VOLUMETRIC_LIGHTING,
     DIRECT_LIGHTING,
-    INDIRECT_LIGHTING,
     FULL_LIGHTING,
     NAIVE_LIGHTING,
 };
@@ -59,7 +59,7 @@ private:
     bool makeBVH;
     int maxBVHPrims;
     bool deNoise = true;
-    int buckets_deNoise = 360;
+    int buckets_deNoise = 256;
 
 public:
     explicit MyGL(QWidget *parent = 0);

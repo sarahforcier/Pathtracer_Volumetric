@@ -4,17 +4,6 @@
 #include <raytracing/ray.h>
 #include <raytracing/intersection.h>
 
-class Medium;  // forward declarations;
-
-// boundary between two different types of scattering media
-// represented by the surface of a geometric primitive
-struct MediumInterface {
-    MediumInterface(const Medium *medium) : inside(medium), outside(medium) {}
-    MediumInterface(const Medium *inside, const Medium *outside) : inside(inside), outside(outside) {}
-    bool isMediumTransition() {return inside != outside;}
-    const Medium *inside, *outside; // nullptr to indicate vacuum
-};
-
 class Medium
 {
 public:
@@ -31,6 +20,15 @@ public:
     // samples an incident direction wi and a sample value in [0, 1)^2
     // does not return pdf since a call to p() will work
     virtual float Sample_p(const Vector3f &wo, Vector3f *wi, const Point2f &u) const = 0;
+};
+
+// boundary between two different types of scattering media
+// represented by the surface of a geometric primitive
+struct MediumInterface {
+    MediumInterface(const Medium *medium) : inside(medium), outside(medium) {}
+    MediumInterface(const Medium *inside, const Medium *outside) : inside(inside), outside(outside) {}
+    bool isMediumTransition() {return inside != outside;}
+    const Medium *inside, *outside; // nullptr to indicate vacuum
 };
 
 inline Float PhaseHG(Float cosTheta, Float g) {

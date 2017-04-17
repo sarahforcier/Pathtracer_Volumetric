@@ -22,6 +22,7 @@ SOURCES += \
     $$PWD/scene/materials/bsdf.cpp \
     $$PWD/integrators/fulllightingintegrator.cpp \
     $$PWD/integrators/directlightingintegrator.cpp \
+    $$PWD/integrators/volumetricintegrator.cpp \
     $$PWD/integrators/integrator.cpp \
     $$PWD/scene/geometry/sphere.cpp \
     $$PWD/scene/geometry/glshapecreation.cpp \
@@ -56,7 +57,10 @@ SOURCES += \
     $$PWD/scene/bounds.cpp \
     $$PWD/scene/bvh.cpp \
     $$PWD/scene/geometry/csg.cpp \
-    $$PWD/raytracing/kmeansfilter.cpp
+    $$PWD/raytracing/kmeansfilter.cpp \
+    $$PWD/scene/geometry/cylinder.cpp \
+    $$PWD/scene/mediums/homogeneousmedium.cpp \
+    $$PWD/scene/mediums/phasefunction.cpp
 
 
 HEADERS += \
@@ -86,6 +90,7 @@ HEADERS += \
     $$PWD/scene/materials/bsdf.h \
     $$PWD/integrators/fulllightingintegrator.h \
     $$PWD/integrators/directlightingintegrator.h \
+    $$PWD/integrators/volumetricintegrator.h \
     $$PWD/scene/geometry/sphere.h \
     $$PWD/scene/geometry/squareplane.h \
     $$PWD/scene/geometry/cube.h \
@@ -115,4 +120,8 @@ HEADERS += \
     $$PWD/scene/bounds.h \
     $$PWD/scene/bvh.h \
     $$PWD/scene/geometry/csg.h \
-    $$PWD/raytracing/kmeansfilter.h
+    $$PWD/raytracing/kmeansfilter.h \
+    $$PWD/scene/geometry/cylinder.h \
+    $$PWD/scene/mediums/homogeneousmedium.h \
+    $$PWD/scene/mediums/medium.h \
+    $$PWD/scene/mediums/phasefunction.h

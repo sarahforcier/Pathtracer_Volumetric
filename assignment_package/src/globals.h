@@ -172,3 +172,10 @@ inline Color3f GetStdDev(std::vector<Color3f> colors, Color3f mean) {
     }
     return glm::sqrt(stdDev/(float)size);
 }
+
+inline Vector3f SphericalDirection(float sinTheta, float cosTheta, float phi,
+                                   const Vector3f &x, const Vector3f &y, const Vector3f &z) {
+    return sinTheta * std::cos(phi) * x +
+           sinTheta * std::sin(phi) * y +
+           cosTheta * z;
+}

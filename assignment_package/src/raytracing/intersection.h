@@ -3,12 +3,13 @@
 #include <scene/materials/bsdf.h>
 #include <raytracing/ray.h>
 #include <scene/geometry/primitive.h>
+#include <scene/mediums/medium.h>
 #include <QList>
 
 class Material;
-class Medium;
 class BSDF;
 class Primitive;
+struct MediumInterface;
 
 class Intersection
 {
@@ -38,7 +39,7 @@ public:
     float t;                  // The parameterization for the ray (in world space) that generated this intersection.
                               // t is equal to the distance from the point of intersection to the ray's origin if the ray's direction is normalized.
     Primitive const * objectHit;     // The object that the ray intersected, or nullptr if the ray hit nothing.
-    //Medium * medium;
+    MediumInterface * mediumInterface;
     std::shared_ptr<BSDF> bsdf;// The Bidirection Scattering Distribution Function found at the intersection.
 
     Vector3f tangent, bitangent; // World-space vectors that form an orthonormal basis with the surface normal.

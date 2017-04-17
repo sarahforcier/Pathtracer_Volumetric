@@ -7,4 +7,5 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         // handle scattering at a point in medium
         // handle surface
     // terminate with russian roulette
+    return Color3f(0.f);
 }

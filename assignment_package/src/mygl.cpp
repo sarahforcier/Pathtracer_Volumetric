@@ -11,6 +11,7 @@
 #include <integrators/directlightingintegrator.h>
 #include <integrators/naiveintegrator.h>
 #include <integrators/fulllightingintegrator.h>
+#include <integrators/volumetricintegrator.h>
 #include <scene/lights/diffusearealight.h>
 #include <QDateTime>
 
@@ -407,6 +408,9 @@ void MyGL::RenderScene()
             case NAIVE_LIGHTING:
                 rt = new NaiveIntegrator(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
                 break;
+            case VOLUMETRIC_LIGHTING:
+                rt = new VolumetricIntegrator(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
+                break;
             }
 #define MULTITHREAD // Comment this line out to be able to debug with breakpoints.
 #ifdef MULTITHREAD
@@ -484,7 +488,7 @@ void MyGL::completeRender()
 
     scene.film.WriteImage(output_filepath);
 
-    if (deNoise) scene.film.PostProcess();
+    if (deNoise) scene.film.PostProcess(buckets_deNoise);
 
     scene.film.WriteImage(output_filepath.append(QString("_post")));
     completeSFX.play();
@@ -519,14 +523,15 @@ void MyGL::slot_SetIntegratorType(int t)
         integratorType = NAIVE_LIGHTING;
         break;
     case 1:
-        integratorType = DIRECT_LIGHTING;
+        integratorType = VOLUMETRIC_LIGHTING;
         break;
     case 2:
-        integratorType = INDIRECT_LIGHTING;
+        integratorType = DIRECT_LIGHTING;
         break;
     case 3:
         integratorType = FULL_LIGHTING;
         break;
+
     }
 }
 

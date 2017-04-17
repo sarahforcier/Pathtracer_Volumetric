@@ -5,30 +5,32 @@ Color3f HomogeneousMedium::Tr(const Ray &ray, Sampler &sampler) const
 {
     // TODO need to handle case when no intersection so tMax = infinity
     // TODO need to insure ray.direction is always normalized for calc of tMax
-    return glm::exp(-sigma_t * ray.tMax * ray.direction.length());
+    return glm::exp(-sigma_t * ray.tMax * glm::length(ray.direction));
 }
 
 Color3f HomogeneousMedium::Sample(const Ray &ray, Sampler &sampler, Intersection *isect) const {
-    // sample a channel (because sigma_t varies by wavelength)
-    int channel = glm::min((int)(sampler.Get1D() * Spectrum::nSaamples), Spectrum::nSamples - 1);
+//    // sample a channel (because sigma_t varies by wavelength)
+//    int channel = glm::min((int)(sampler.Get1D() * Spectrum::nSaamples), Spectrum::nSamples - 1);
 
-    // sample a distance along the ray
-    float dist = -std::log(1 - sampler.Get1D()) / sigma_t[channel];
-    float t = std::min(dist * ray.direction.length(), ray.tMax);
-    bool sampledMedium = t < ray.tMax;
-    if (sampledMedium) {
-        isect->medium = this;
-    }
+//    // sample a distance along the ray
+//    float dist = -std::log(1 - sampler.Get1D()) / sigma_t[channel];
+//    float t = std::min(dist * ray.direction.length(), ray.tMax);
+//    bool sampledMedium = t < ray.tMax;
+//    if (sampledMedium) {
+//        isect->mediumInterface = this;
+//    }
 
-    // compute the transmittance and sampling density
-    Color3f Tr = Tr(ray, sampler);
+//    // compute the transmittance and sampling density
+//    Color3f Tr = Tr(ray, sampler);
 
-    // return weighting factor for scattering from homogeneous medium
-    Color3f density = sampleMedium ? (sigma_t * Tr) : Tr;
-    float pdf = 0.f;
-    for (int i = 0; i < Spectrum::nSamples; ++i) pdf += density[i];
-    pdf *= 1/ (float) Spectrum::nSamples;
-    return sampledMedium ? (Tr * sigma_s / pdf) : (Tr / pdf);
+//    // return weighting factor for scattering from homogeneous medium
+//    Color3f density = sampleMedium ? (sigma_t * Tr) : Tr;
+//    float pdf = 0.f;
+//    for (int i = 0; i < Spectrum::nSamples; ++i) pdf += density[i];
+//    pdf *= 1/ (float) Spectrum::nSamples;
+//    return sampledMedium ? (Tr * sigma_s / pdf) : (Tr / pdf);
+
+    return Color3f(0.f);
 }
 
 float HomogeneousMedium::Sample_p(const Vector3f &wo, Vector3f *wi, const Point2f &u) const {
@@ -45,6 +47,6 @@ float HomogeneousMedium::Sample_p(const Vector3f &wo, Vector3f *wi, const Point2
     float phi = 2 * Pi * u[1];
     Vector3f v1, v2;
     CoordinateSystem(wo, &v1, &v2);
-    *wi = SphericalDirection(sinTheta, cosTheta, phi, vi, v2, -wo);
+    *wi = SphericalDirection(sinTheta, cosTheta, phi, v1, v2, -wo);
     return PhaseHG(-cosTheta, g);
 }

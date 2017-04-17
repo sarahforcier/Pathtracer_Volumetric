@@ -21,7 +21,7 @@ public:
     void WriteImage(QString path);
     bool IsPixelColorSet(const Point2i& pixel);
     void cleanPixels();
-    void PostProcess();
+    void PostProcess(int num);
 
     Bounds2i bounds;
 //    std::shared_ptr<DeNoise> denoise;

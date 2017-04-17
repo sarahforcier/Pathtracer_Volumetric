@@ -2,11 +2,11 @@
 #include <QImage>
 #include <QColor>
 
-void Film::PostProcess() {
+void Film::PostProcess(int num) {
 //    denoise = std::make_shared<DeNoise>(pixels, sigma_sp, bounds.Max());
 //    pixels = denoise->denoised_image;
 
-    kmeans = std::make_shared<K_MeansFilter>(pixels, sigma_sp, 256);
+    kmeans = std::make_shared<K_MeansFilter>(pixels, sigma_sp, num);
     Point2i dim = bounds.Max();
     for (int i = 0; i < dim.x; i ++) {
         for (int j = 0; j < dim.y; j ++) {
