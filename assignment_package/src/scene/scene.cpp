@@ -45,7 +45,7 @@ bool Scene::Intersect(const Ray &ray, Intersection *isect) const
     return false;
 }
 
-bool Scene::IntersectTr(Ray& ray, std::shared_ptr<Sampler> sampler, Intersection* isect, Color3f* Tr) {
+bool Scene::IntersectTr(Ray& ray, std::shared_ptr<Sampler> sampler, Intersection* isect, Color3f* Tr) const {
     *Tr = Color3f(1.f);
     while (true) {
         bool hitSurface = Intersect(ray, isect);

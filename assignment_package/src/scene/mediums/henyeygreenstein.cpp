@@ -20,6 +20,5 @@ float HenyeyGreenstein::Sample_p(const Vector3f &wo, Vector3f *wi,
 }
 
 float HenyeyGreenstein::p(const Vector3f &wo, const Vector3f &wi) const {
-    ProfilePhase _(Prof::PhaseFuncEvaluation);
-    return PhaseHG(Dot(wo, wi), g);
+    return PhaseHG(glm::dot(wo, wi), g);
 }

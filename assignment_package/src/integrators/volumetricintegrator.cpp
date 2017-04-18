@@ -49,7 +49,23 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
 
             if (scatteringPdf > 0.f) {
                 // Compute effect of visibility for light source sample
-                Li *= visibility.Tr(scene, sampler);
+                Ray light_ray(mi.SpawnRay(wiW));
+                Color3f Tr(1.f);
+                while (true) {
+                    Intersection inter;
+                    bool hitSurface = scene.Intersect(ray, &inter);
+                    // Handle opaque surface along ray's path
+                    if (hitSurface && isect.objectHit->GetMaterial() != nullptr)
+                        return Color3f(0.f);
+
+                    // Update transmittance for current ray segment
+                    if (ray.medium) Tr *= ray.medium->Tr(light_ray, sampler);
+
+                    // Generate next ray segment or return final transmittance
+                    if (!hitSurface) break;
+                    light_ray = inter.SpawnRay(wiW);
+                }
+                Li *= Tr;
 
                 if (!IsBlack(Li)) {
                     Float weight = PowerHeuristic(1, lightPdf, 1, f);
@@ -58,18 +74,18 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             }
 
             // Sample scattered direction for medium interactions
-            float p = mi.medInterface->inside->Sample_p(woW, &wiW, sampler->Get2D());
+            Color3f p = mi.medInterface->inside->Sample_p(woW, &wiW, sampler->Get2D());
 
-            if (p > 0) {
+            if (!IsBlack(p)) {
                 // Account for light contributions along sampled direction _wi_
                 Float weight = 1;
                 lightPdf = light->Pdf_Li(mi, wiW);
                 if (lightPdf != 0) {
-                    weight = PowerHeuristic(1, p, 1, lightPdf);
+                    weight = PowerHeuristic(1, p.x, 1, lightPdf);
 
                     // Find intersection and compute transmittance
                     Intersection lightIsect;
-                    Ray ray = medium_inter.SpawnRay(wiW);
+                    Ray ray = mi.SpawnRay(wiW);
                     Color3f Tr(1.f);
                     bool foundSurfaceInteraction = scene.IntersectTr(ray, sampler, &lightIsect, &Tr);
 
@@ -86,7 +102,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             mi.medInterface->inside->Sample_p(woW, &wiW, sampler->Get2D());
 
             // Step 1: increment along ray by ds (ds is RayEpsilon in SpawnRay)
-            ray = medium_inter.SpawnRay(wiW);
+            ray = mi.SpawnRay(wiW);
 
             // handle intersection with surface (full lighting)
         } else {
