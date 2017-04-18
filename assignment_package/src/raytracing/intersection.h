@@ -7,6 +7,7 @@
 #include <QList>
 
 class Material;
+class Medium;
 class BSDF;
 class Primitive;
 struct MediumInterface;
@@ -15,6 +16,8 @@ class Intersection
 {
 public:
     Intersection();
+
+    Intersection(Point3f p, float time, std::shared_ptr<MediumInterface> mediumI) : point(p), medInterface(mediumI), t(time) {}
 
     // Ask _objectHit_ to produce a BSDF
     // based on other data stored in this
@@ -39,7 +42,7 @@ public:
     float t;                  // The parameterization for the ray (in world space) that generated this intersection.
                               // t is equal to the distance from the point of intersection to the ray's origin if the ray's direction is normalized.
     Primitive const * objectHit;     // The object that the ray intersected, or nullptr if the ray hit nothing.
-    MediumInterface * mediumInterface;
+    std::shared_ptr<MediumInterface> medInterface;
     std::shared_ptr<BSDF> bsdf;// The Bidirection Scattering Distribution Function found at the intersection.
 
     Vector3f tangent, bitangent; // World-space vectors that form an orthonormal basis with the surface normal.

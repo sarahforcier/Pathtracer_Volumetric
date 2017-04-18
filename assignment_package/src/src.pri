@@ -60,7 +60,7 @@ SOURCES += \
     $$PWD/raytracing/kmeansfilter.cpp \
     $$PWD/scene/geometry/cylinder.cpp \
     $$PWD/scene/mediums/homogeneousmedium.cpp \
-    $$PWD/scene/mediums/phasefunction.cpp
+    $$PWD/scene/mediums/henyeygreenstein.cpp
 
 
 HEADERS += \
@@ -124,4 +124,4 @@ HEADERS += \
     $$PWD/scene/geometry/cylinder.h \
     $$PWD/scene/mediums/homogeneousmedium.h \
     $$PWD/scene/mediums/medium.h \
-    $$PWD/scene/mediums/phasefunction.h
+    $$PWD/scene/mediums/henyeygreenstein.h

@@ -47,4 +47,7 @@ protected:
     int recursionLimit;
 };
 
+float BalanceHeuristic(int nf, Float fPdf, int ng, Float gPdf);
+float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf);
+
 

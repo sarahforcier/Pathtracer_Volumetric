@@ -164,6 +164,7 @@ inline void CoordinateSystem(const Vector3f& v1, Vector3f* v2, Vector3f* v3)
         *v3 = glm::cross(v1, *v2);
 }
 
+// added by Sarah
 inline Color3f GetStdDev(std::vector<Color3f> colors, Color3f mean) {
     int size = colors.size();
     Color3f stdDev = Color3f(0.f);
@@ -178,4 +179,8 @@ inline Vector3f SphericalDirection(float sinTheta, float cosTheta, float phi,
     return sinTheta * std::cos(phi) * x +
            sinTheta * std::sin(phi) * y +
            cosTheta * z;
+}
+
+inline bool IsBlack(Color3f &color) {
+    return color == Color3f(0.f);
 }

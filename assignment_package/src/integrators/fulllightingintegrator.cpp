@@ -2,7 +2,6 @@
 
 Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<Sampler> sampler, int depth) const
 {
-    //TODO
     Color3f energy = Color3f(1.f);
     Color3f color = Color3f(0.f);
     // declarations
@@ -72,20 +71,3 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
     }
     return color;
 }
-
-float BalanceHeuristic(int nf, Float fPdf, int ng, Float gPdf)
-{
-    //TODO
-    if (fPdf == 0.f && gPdf == 0.f) return 0.f;
-    return (nf * fPdf) / (nf * fPdf + ng * gPdf);
-}
-
-float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf)
-{
-    //TODO
-    if (fPdf == 0.f && gPdf == 0.f) return 0.f;
-    float f = nf * fPdf;
-    float g = ng * gPdf;
-    return (f * f) / (f * f + g * g);
-}
-

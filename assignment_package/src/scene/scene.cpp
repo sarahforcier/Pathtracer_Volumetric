@@ -25,12 +25,8 @@ void Scene::SetCamera(const Camera &c)
 
 bool Scene::Intersect(const Ray &ray, Intersection *isect) const
 {
-    if(bvh)
-    {
-        return bvh->Intersect(ray, isect);
-    }
-    else
-    {
+    if(bvh) return bvh->Intersect(ray, isect);
+    else {
         bool result = false;
         for(std::shared_ptr<Primitive> p : primitives)
         {
@@ -47,6 +43,20 @@ bool Scene::Intersect(const Ray &ray, Intersection *isect) const
         return result;
     }
     return false;
+}
+
+bool Scene::IntersectTr(Ray& ray, std::shared_ptr<Sampler> sampler, Intersection* isect, Color3f* Tr) {
+    *Tr = Color3f(1.f);
+    while (true) {
+        bool hitSurface = Intersect(ray, isect);
+        // accumulate beam transmittance for ray segment
+        if (ray.medium) *Tr *= ray.medium->Tr(ray, sampler);
+        // check for termination
+        if (!hitSurface) return false;
+        if (!isect->objectHit->GetMaterial()) return true;
+        // initialize next ray segment in new medium
+        ray = isect->SpawnRay(ray.direction);
+    }
 }
 
 void Scene::CreateTestScene()

@@ -14,6 +14,3 @@ public:
     // its origin using multiple importance sampling
     virtual Color3f Li(Ray &ray, const Scene &scene, std::shared_ptr<Sampler> sampler, int depth) const;
 };
-
-float BalanceHeuristic(int nf, Float fPdf, int ng, Float gPdf);
-float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf);

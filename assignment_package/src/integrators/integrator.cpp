@@ -52,4 +52,20 @@ void Integrator::ClampBounds()
     bounds = Bounds2i(bounds.Min(), max);
 }
 
+float BalanceHeuristic(int nf, Float fPdf, int ng, Float gPdf)
+{
+    //TODO
+    if (fPdf == 0.f && gPdf == 0.f) return 0.f;
+    return (nf * fPdf) / (nf * fPdf + ng * gPdf);
+}
+
+float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf)
+{
+    //TODO
+    if (fPdf == 0.f && gPdf == 0.f) return 0.f;
+    float f = nf * fPdf;
+    float g = ng * gPdf;
+    return (f * f) / (f * f + g * g);
+}
+
 
