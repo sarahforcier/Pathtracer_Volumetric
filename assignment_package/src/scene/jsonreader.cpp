@@ -9,6 +9,7 @@
 #include <scene/materials/transmissivematerial.h>
 #include <scene/materials/glassmaterial.h>
 #include <scene/materials/plasticmaterial.h>
+#include <scene/mediums/homogeneousmedium.h>
 #include <scene/lights/diffusearealight.h>
 #include <iostream>
 
@@ -24,9 +25,10 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
         // Get JSON object
         QJsonObject json = doc.object();
         QJsonObject sceneObj, camera;
-        QJsonArray primitiveList, materialList, lightList, csgList;
+        QJsonArray primitiveList, materialList, mediumList, lightList, csgList;
 
         QMap<QString, std::shared_ptr<Material>> mtl_name_to_material;
+        QMap<QString, std::shared_ptr<Medium>> med_name_to_material;
         QJsonArray frames = json["frames"].toArray();
         //check scene object for every frame
         foreach(const QJsonValue &frame, frames) {
@@ -42,6 +44,14 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
                 foreach(const QJsonValue &materialVal, materialList){
                     QJsonObject materialObj = materialVal.toObject();
                     LoadMaterial(materialObj, local_path, &mtl_name_to_material);
+                }
+            }
+            //load all mediums in QMap with med name as key and Medium itself as value
+            if(sceneObj.contains(QString("mediums"))){
+                mediumList = sceneObj["mediums"].toArray();
+                foreach(const QJsonValue &mediumVal, mediumList){
+                    QJsonObject mediumObj = mediumVal.toObject();
+                    LoadMedium(mediumObj, local_path, &med_name_to_material);
                 }
             }
             //load primitives and attach materials from QMap
@@ -479,6 +489,30 @@ bool JSONReader::LoadMaterial(QJsonObject &material, const QStringRef &local_pat
     else
     {
         std::cout << "Could not parse the material!" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool JSONReader::LoadMedium(QJsonObject &medium, const QStringRef &local_path, QMap<QString, std::shared_ptr<Medium> > *med_map)
+{
+    QString type;
+
+    //First check what type of material we're supposed to load
+    if(medium.contains(QString("type"))) type = medium["type"].toString();
+
+    if(QString::compare(type, QString("Homogeneous")) == 0)
+    {
+        float sigma_a = static_cast< float >(medium["sigma_a"].toDouble());
+        float sigma_s = static_cast< float >(medium["sigma_s"].toDouble());
+        float g = static_cast< float >(medium["scale"].toDouble());
+        auto result = std::make_shared<HomogeneousMedium>(sigma_a, sigma_s, g);
+        med_map->insert(medium["name"].toString(), result);
+    }
+    else
+    {
+        std::cout << "Could not parse the medium!" << std::endl;
         return false;
     }
 
