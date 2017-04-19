@@ -138,7 +138,7 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
                 std::shared_ptr<Medium> medium2 = nullptr;
                 for (im = med_map.begin(); im != med_map.end(); ++i) {
                     if(!med1.isEmpty() && i.key() == med1) medium1 = im.value();
-                    if(!med2.isEmpty() && i.key() == med1) medium2 = im.value();
+                    if(!med2.isEmpty() && i.key() == med2) medium2 = im.value();
                 }
                 primitive->mediumInterface = std::make_shared<MediumInterface>(medium1, medium2);
             }
@@ -190,9 +190,9 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
             QString med2 = medInterface.at(1).toString();
             std::shared_ptr<Medium> medium1 = nullptr;
             std::shared_ptr<Medium> medium2 = nullptr;
-            for (im = med_map.begin(); im != med_map.end(); ++i) {
-                if(!med1.isEmpty() && i.key() == med1) medium1 = im.value();
-                if(!med2.isEmpty() && i.key() == med1) medium2 = im.value();
+            for (im = med_map.begin(); im != med_map.end(); ++im) {
+                if(!med1.isEmpty() && im.key() == med1) medium1 = im.value();
+                if(!med2.isEmpty() && im.key() == med2) medium2 = im.value();
             }
             primitive->mediumInterface = std::make_shared<MediumInterface>(medium1, medium2);
         }
@@ -544,11 +544,11 @@ bool JSONReader::LoadMedium(QJsonObject &medium, const QStringRef &local_path, Q
     //First check what type of material we're supposed to load
     if(medium.contains(QString("type"))) type = medium["type"].toString();
 
-    if(QString::compare(type, QString("Homogeneous")) == 0)
+    if(QString::compare(type, QString("HomogeneousMedium")) == 0)
     {
         float sigma_a = static_cast< float >(medium["sigma_a"].toDouble());
         float sigma_s = static_cast< float >(medium["sigma_s"].toDouble());
-        float g = static_cast< float >(medium["scale"].toDouble());
+        float g = static_cast< float >(medium["g"].toDouble());
         auto result = std::make_shared<HomogeneousMedium>(sigma_a, sigma_s, g);
         med_map->insert(medium["name"].toString(), result);
     }

@@ -8,7 +8,7 @@ class HomogeneousMedium : public Medium
 {
 public:
     HomogeneousMedium(const float &sigma_a, const float sigma_s, float g)
-        : sigma_a(sigma_a), sigma_s(sigma_s), sigma_t(sigma_s + sigma_t), g(g) {}
+        : sigma_a(sigma_a), sigma_s(sigma_s), g(g) { sigma_t = sigma_s + sigma_a;}
 
     float Tr(const Ray &ray, std::shared_ptr<Sampler> sampler) const;
 
