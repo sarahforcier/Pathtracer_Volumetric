@@ -23,19 +23,24 @@ void Scene::SetCamera(const Camera &c)
     film.SetDimensions(c.width, c.height);
 }
 
-bool Scene::Intersect(const Ray &ray, Intersection *isect) const
+bool Scene::Intersect(Ray &ray, Intersection *isect) const
 {
     if(bvh) return bvh->Intersect(ray, isect);
     else {
         bool result = false;
         for(std::shared_ptr<Primitive> p : primitives)
         {
+            // update medium if any primitives have outside medium
+            std::shared_ptr<Medium> outside = p->mediumInterface->outside;
+            if (outside) ray.medium = outside;
+
             Intersection testIsect;
             if(p->Intersect(ray, &testIsect))
             {
                 if(testIsect.t < isect->t || isect->t < 0)
                 {
                     *isect = testIsect;
+                    ray.tMax = isect->t;
                     result = true;
                 }
             }

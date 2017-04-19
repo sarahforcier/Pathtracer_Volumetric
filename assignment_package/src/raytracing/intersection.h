@@ -33,7 +33,7 @@ public:
 
     // Instantiate a Ray that originates from this Intersection and
     // travels in direction d.
-    const Ray SpawnRay(const Vector3f &d) const;
+    Ray SpawnRay(const Vector3f &d) const;
 
     Point3f point;          // The place at which the intersection occurred
     Normal3f normalGeometric; // The surface normal at the point of intersection, NO alterations like normal mapping applied

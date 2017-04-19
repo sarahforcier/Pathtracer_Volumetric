@@ -121,7 +121,8 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             float wg = PowerHeuristic(1, pdf, 1, isect.bsdf->Pdf(woW, wiW));
             Color3f gColor(0.f);
             Intersection shad_Feel;
-            if (scene.Intersect(isect.SpawnRay(wiW), &shad_Feel)) {
+            Ray shadowRay = isect.SpawnRay(wiW);
+            if (scene.Intersect(shadowRay, &shad_Feel)) {
                 if (pdf > 0.f && shad_Feel.objectHit->areaLight == scene.lights[index])
                     gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
             }
@@ -129,7 +130,8 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             Color3f f1 = isect.bsdf->Sample_f(woW, &wiW, sampler->Get2D(), &pdf);
             Color3f fColor(0.f);
             Intersection isect_Test;
-            if (pdf > 0.f && scene.Intersect(isect.SpawnRay(glm::normalize(wiW)), &isect_Test)) {
+            Ray indirectRay = isect.SpawnRay(glm::normalize(wiW));
+            if (pdf > 0.f && scene.Intersect(indirectRay, &isect_Test)) {
                 if (isect_Test.objectHit->areaLight == scene.lights[index])
                     fColor = light->L(isect_Test, -wiW) * f1 * AbsDot(wiW, isect.normalGeometric)/pdf;
             }
