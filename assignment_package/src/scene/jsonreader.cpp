@@ -59,7 +59,7 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
                 primitiveList = sceneObj["primitives"].toArray();
                 foreach(const QJsonValue &primitiveVal, primitiveList){
                     QJsonObject primitiveObj = primitiveVal.toObject();
-                    LoadGeometry(primitiveObj, mtl_name_to_material, local_path, &scene.primitives, &scene.drawables);
+                    LoadGeometry(primitiveObj, mtl_name_to_material, med_name_to_material, local_path, &scene.primitives, &scene.drawables);
                 }
             }
             //load csg and attach materials from QMap
@@ -67,7 +67,7 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
                 csgList = sceneObj["csg"].toArray();
                 foreach(const QJsonValue &csgVal, csgList){
                     QJsonObject csgObj = csgVal.toObject();
-                    LoadCSG(csgObj, mtl_name_to_material, local_path, &scene.primitives, &scene.drawables);
+                    LoadCSG(csgObj, mtl_name_to_material, med_name_to_material, local_path, &scene.primitives, &scene.drawables);
                 }
             }
             //load lights and attach materials from QMap
@@ -88,7 +88,7 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
     }
 }
 
-bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable>> *drawables)
+bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, QMap<QString, std::shared_ptr<Medium>> med_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable>> *drawables)
 {
     std::shared_ptr<Shape> shape = nullptr;
     //First check what type of geometry we're supposed to load
@@ -128,6 +128,19 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
                         primitive->material = i.value();
                     }
                 }
+            }
+            QMap<QString, std::shared_ptr<Medium>>::iterator im;
+            if(geometry.contains(QString("medium"))) {
+                QJsonArray medInterface =  geometry["medium"].toArray();
+                QString med1 = medInterface.at(0).toString();
+                QString med2 = medInterface.at(1).toString();
+                std::shared_ptr<Medium> medium1 = nullptr;
+                std::shared_ptr<Medium> medium2 = nullptr;
+                for (im = med_map.begin(); im != med_map.end(); ++i) {
+                    if(!med1.isEmpty() && i.key() == med1) medium1 = im.value();
+                    if(!med2.isEmpty() && i.key() == med1) medium2 = im.value();
+                }
+                primitive->mediumInterface = std::make_shared<MediumInterface>(medium1, medium2);
             }
             primitive->name = meshName.append(QString("'s Triangle"));
             (*primitives).append(primitive);
@@ -170,6 +183,19 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
                 }
             }
         }
+        QMap<QString, std::shared_ptr<Medium>>::iterator im;
+        if(geometry.contains(QString("medium"))) {
+            QJsonArray medInterface =  geometry["medium"].toArray();
+            QString med1 = medInterface.at(0).toString();
+            QString med2 = medInterface.at(1).toString();
+            std::shared_ptr<Medium> medium1 = nullptr;
+            std::shared_ptr<Medium> medium2 = nullptr;
+            for (im = med_map.begin(); im != med_map.end(); ++i) {
+                if(!med1.isEmpty() && i.key() == med1) medium1 = im.value();
+                if(!med2.isEmpty() && i.key() == med1) medium2 = im.value();
+            }
+            primitive->mediumInterface = std::make_shared<MediumInterface>(medium1, medium2);
+        }
         //load transform to shape
         if(geometry.contains(QString("transform"))) {
             QJsonObject transform = geometry["transform"].toObject();
@@ -182,9 +208,9 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
     return true;
 }
 
-bool JSONReader::LoadCSG(QJsonObject &csgObj, QMap<QString, std::shared_ptr<Material>> mtl_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable>> *drawables)
+bool JSONReader::LoadCSG(QJsonObject &csgObj, QMap<QString, std::shared_ptr<Material>> mtl_map, QMap<QString, std::shared_ptr<Medium>> med_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable>> *drawables)
 {
-    QJsonArray shapeList, transformList, operatorList, nameList, materialList;
+    QJsonArray shapeList, transformList, operatorList, nameList, materialList, mediumList;
     // make operator array
     if(csgObj.contains(QString("operators"))) operatorList = csgObj["operators"].toArray();
     std::vector<operation> operators;
@@ -215,6 +241,10 @@ bool JSONReader::LoadCSG(QJsonObject &csgObj, QMap<QString, std::shared_ptr<Mate
     // make material array
     if(csgObj.contains(QString("materials"))) materialList = csgObj["materials"].toArray();
     QMap<QString, std::shared_ptr<Material>>::iterator iter;
+
+    // make material array
+    if(csgObj.contains(QString("mediums"))) mediumList = csgObj["mediums"].toArray();
+    QMap<QString, std::shared_ptr<Medium>>::iterator im;
 
     // make shapes array
     std::vector<std::shared_ptr<Primitive>> prim_list;
@@ -262,6 +292,18 @@ bool JSONReader::LoadCSG(QJsonObject &csgObj, QMap<QString, std::shared_ptr<Mate
                     primitive->material = iter.value();
                 }
             }
+
+            QJsonArray medInterface =  mediumList.at(i).toArray();
+            QString med1 = medInterface.at(0).toString();
+            QString med2 = medInterface.at(1).toString();
+            std::shared_ptr<Medium> medium1 = nullptr;
+            std::shared_ptr<Medium> medium2 = nullptr;
+            for (im = med_map.begin(); im != med_map.end(); ++i) {
+                if(!med1.isEmpty() && im.key() == med1) medium1 = im.value();
+                if(!med2.isEmpty() && im.key() == med2) medium2 = im.value();
+            }
+            primitive->mediumInterface = std::make_shared<MediumInterface>(medium1, medium2);
+
             prim_list.push_back(primitive);
         }
     }

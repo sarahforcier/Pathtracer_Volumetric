@@ -35,3 +35,8 @@ const Material* Primitive::GetMaterial() const
 {
     return material.get();
 }
+
+const MediumInterface* Primitive::GetMedium() const
+{
+    return mediumInterface.get();
+}

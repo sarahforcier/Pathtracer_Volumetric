@@ -14,8 +14,8 @@ class JSONReader
 {
 public:
     void LoadSceneFromFile(QFile &file, const QStringRef &local_path, Scene &scene);
-    bool LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable> > *drawables);
-    bool LoadCSG(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable> > *drawables);
+    bool LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, QMap<QString, std::shared_ptr<Medium>> med_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable> > *drawables);
+    bool LoadCSG(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, QMap<QString, std::shared_ptr<Medium>> med_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Drawable> > *drawables);
     bool LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Light>> *lights, QList<std::shared_ptr<Drawable>> *drawables);
     bool LoadMaterial(QJsonObject &material, const QStringRef &local_path, QMap<QString, std::shared_ptr<Material> > *mtl_map);
     bool LoadMedium(QJsonObject &medium, const QStringRef &local_path, QMap<QString, std::shared_ptr<Medium> > *medium_map);

@@ -1,7 +1,5 @@
 #pragma once
 #include "medium.h"
-#include "henyeygreenstein.h"
-
 
 // represents region of space with constant absorption and out-scattering
 // uses Henyey-Greenstein phase function with constant g
@@ -24,7 +22,8 @@ public:
     Color3f Sample(const Ray &ray, const float x, Intersection *isect) const;
     Color3f Sample_p(const Vector3f &wo, Vector3f *wi, const Point2f &u) const;
 
+    float p(const Vector3f &wo, const Vector3f &wi) const;
+
 private:
-    const float sigma_a, sigma_s, sigma_t;
-    const float g;
+    float sigma_a, sigma_s, sigma_t, g;
 };

@@ -14,10 +14,6 @@ Color3f HomogeneousMedium::Sample(const Ray &ray, const float x, Intersection *i
     float t = - std::log(x) / sigma_t;
     float pdf = sigma_t * std::exp(-sigma_t * t);
     bool sampledMedium = t < ray.tMax;
-    if (sampledMedium) {
-        std::shared_ptr<HenyeyGreenstein> phase = std::make_shared<HenyeyGreenstein>(g);
-        inter->medInterface = std::make_shared<MediumInterface>(this, phase);
-    }
 
     // compute the transmittance and sampling density
     float Tr = glm::exp(-sigma_t * ray.tMax * glm::length(ray.direction));
@@ -44,4 +40,8 @@ Color3f HomogeneousMedium::Sample_p(const Vector3f &wo, Vector3f *wi, const Poin
     *wi = SphericalDirection(sinTheta, cosTheta, phi, v1, v2, -wo);
     float c = PhaseHG(-cosTheta, g);
     return Color3f(c);
+}
+
+float HomogeneousMedium::p(const Vector3f &wo, const Vector3f &wi) const {
+    return PhaseHG(glm::dot(wo, wi), g);
 }

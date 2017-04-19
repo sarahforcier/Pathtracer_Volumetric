@@ -45,7 +45,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             Color3f Li = light->Sample_Li(mi, sampler->Get2D(), &wiW, &lightPdf);
             float f = 0.f;
             // Evaluate phase function for light sampling strategy
-            if (lightPdf > 0.f && !IsBlack(Li)) scatteringPdf = mi.medInterface->p_inside->p(woW, wiW);
+            if (lightPdf > 0.f && !IsBlack(Li)) scatteringPdf = mi.medInterface->inside->p(woW, wiW);
 
             if (scatteringPdf > 0.f) {
                 // Compute effect of visibility for light source sample

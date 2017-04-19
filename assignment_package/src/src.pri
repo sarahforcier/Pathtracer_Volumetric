@@ -59,8 +59,7 @@ SOURCES += \
     $$PWD/scene/geometry/csg.cpp \
     $$PWD/raytracing/kmeansfilter.cpp \
     $$PWD/scene/geometry/cylinder.cpp \
-    $$PWD/scene/mediums/homogeneousmedium.cpp \
-    $$PWD/scene/mediums/henyeygreenstein.cpp
+    $$PWD/scene/mediums/homogeneousmedium.cpp
 
 
 HEADERS += \
@@ -123,5 +122,4 @@ HEADERS += \
     $$PWD/raytracing/kmeansfilter.h \
     $$PWD/scene/geometry/cylinder.h \
     $$PWD/scene/mediums/homogeneousmedium.h \
-    $$PWD/scene/mediums/medium.h \
-    $$PWD/scene/mediums/henyeygreenstein.h
+    $$PWD/scene/mediums/medium.h

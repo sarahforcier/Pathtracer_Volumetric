@@ -2,7 +2,6 @@
 #include <globals.h>
 #include <samplers/sampler.h>
 #include <raytracing/intersection.h>
-#include "phasefunction.h"
 
 class Medium
 {
@@ -20,18 +19,20 @@ public:
     // samples an incident direction wi and a sample value in [0, 1)^2
     // does not return pdf since a call to p() will work
     virtual Color3f Sample_p(const Vector3f &wo, Vector3f *wi, const Point2f &u) const = 0;
+
+    virtual float p(const Vector3f &wo, const Vector3f &wi) const = 0;
 };
 
 // boundary between two different types of scattering media
 // represented by the surface of a geometric primitive
 struct MediumInterface {
-    MediumInterface(const Medium *medium, const std::shared_ptr<PhaseFunction> phase)
-        : inside(medium), outside(medium), p_inside(phase), p_outside(phase) {}
-    MediumInterface(const Medium *inside, const Medium *outside,
-                    const std::shared_ptr<PhaseFunction> p_inside, const std::shared_ptr<PhaseFunction> p_outside)
-        : inside(inside), outside(outside), p_inside(p_inside), p_outside(p_outside) {}
-    bool isMediumTransition() {return inside != outside;}
+    MediumInterface(std::shared_ptr<Medium> inside, std::shared_ptr<Medium> outside)
+        : inside(inside), outside(outside) {}
 
-    const Medium *inside, *outside; // nullptr to indicate vacuum
-    const std::shared_ptr<PhaseFunction> p_inside, p_outside;
+    std::shared_ptr<Medium> inside, outside; // nullptr to indicate vacuum
 };
+
+inline float PhaseHG(float cosTheta, float g) {
+    float denom = 1.f + g * g + 2.f * g * cosTheta;
+    return Inv4Pi * (1.f - g * g) / (denom * glm::sqrt(denom));
+}
