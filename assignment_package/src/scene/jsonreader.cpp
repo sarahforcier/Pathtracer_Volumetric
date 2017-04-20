@@ -75,7 +75,7 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
                 lightList = sceneObj["lights"].toArray();
                 foreach(const QJsonValue &lightVal, lightList){
                     QJsonObject lightObj = lightVal.toObject();
-                    LoadLights(lightObj, mtl_name_to_material, local_path, &scene.primitives, &scene.lights, &scene.drawables);
+                    LoadLights(lightObj, mtl_name_to_material, med_name_to_material, local_path, &scene.primitives, &scene.lights, &scene.drawables);
                 }
             }
         }
@@ -320,7 +320,7 @@ bool JSONReader::LoadCSG(QJsonObject &csgObj, QMap<QString, std::shared_ptr<Mate
     return true;
 }
 
-bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Light>> *lights, QList<std::shared_ptr<Drawable> > *drawables)
+bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr<Material>> mtl_map, QMap<QString, std::shared_ptr<Medium>> med_map, const QStringRef &local_path, QList<std::shared_ptr<Primitive>> *primitives, QList<std::shared_ptr<Light>> *lights, QList<std::shared_ptr<Drawable> > *drawables)
 {
     std::shared_ptr<Shape> shape = nullptr;
     //First check what type of geometry we're supposed to load
@@ -397,6 +397,19 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
                 primitive->material = i.value();
             }
         }
+    }
+    QMap<QString, std::shared_ptr<Medium>>::iterator im;
+    if(geometry.contains(QString("medium"))) {
+        QJsonArray medInterface =  geometry["medium"].toArray();
+        QString med1 = medInterface.at(0).toString();
+        QString med2 = medInterface.at(1).toString();
+        std::shared_ptr<Medium> medium1 = nullptr;
+        std::shared_ptr<Medium> medium2 = nullptr;
+        for (im = med_map.begin(); im != med_map.end(); ++im) {
+            if(!med1.isEmpty() && im.key() == med1) medium1 = im.value();
+            if(!med2.isEmpty() && im.key() == med2) medium2 = im.value();
+        }
+        primitive->mediumInterface = std::make_shared<MediumInterface>(medium1, medium2);
     }
 
     if(geometry.contains(QString("name")))

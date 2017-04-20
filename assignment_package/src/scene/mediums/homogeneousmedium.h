@@ -1,5 +1,6 @@
 #pragma once
 #include "medium.h"
+#include "warpfunctions.h"
 
 // represents region of space with constant absorption and out-scattering
 // uses Henyey-Greenstein phase function with constant g

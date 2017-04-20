@@ -58,7 +58,7 @@ private:
 
     bool makeBVH;
     int maxBVHPrims;
-    bool deNoise = true;
+    bool deNoise = false;
     int buckets_deNoise = 256;
 
 public:

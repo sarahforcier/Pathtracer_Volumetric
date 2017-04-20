@@ -69,8 +69,8 @@
         },
         {
           "shape" : "Sphere",
-          "name" : "transmissive sphere",
-          "material" : "transmissiveMaterial",
+          "name" : "Lambertsphere",
+          "material" : "matteRed",
           "medium" : ["", "fog"],
           "transform" : {
             "translate" : [-1, 1.25, 0],
@@ -84,6 +84,7 @@
           "shape" : "SquarePlane",
           "name" : "Light Source",
           "type" : "DiffuseAreaLight",
+          "medium" : ["", "fog"],
           "lightColor" : [17,12,4],
           "intensity" : 2,
           "transform" : {

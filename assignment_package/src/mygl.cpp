@@ -412,7 +412,7 @@ void MyGL::RenderScene()
                 rt = new VolumetricIntegrator(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
                 break;
             }
-//#define MULTITHREAD // Comment this line out to be able to debug with breakpoints.
+#define MULTITHREAD // Comment this line out to be able to debug with breakpoints.
 #ifdef MULTITHREAD
             QThreadPool::globalInstance()->start(rt);
 #else

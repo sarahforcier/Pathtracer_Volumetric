@@ -37,7 +37,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
 
         // handle intersection with medium
         Vector3f woW = -ray.direction;
-        if (isect.mediumInterface) {
+        if (!isect.mediumInterface->IsInterface()) {
             Color3f Ld = Color3f(0.f);
             float lightPdf = 0, phaseLight = 0;
 
@@ -54,25 +54,18 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
                 // Compute effect of visibility for light source sample
                 Ray light_ray(isect.SpawnRay(wiW));
                 Color3f Tr(1.f);
-                while (true) {
+//                while (true) {
                     Intersection shadFeel;
-                    bool hitSurface = scene.Intersect(light_ray, &shadFeel);
-
-                    // opaque surface along ray's path to light -> occluded -> no light
-                    if (hitSurface && shadFeel.objectHit->GetMaterial() != nullptr) {
-                         Li = Color3f(0.f);
-                         break;
-                    }
-
-                    // Update transmittance for current ray segment
-                    if (light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
+                    bool hitSurface = scene.Intersect(light_ray, &shadFeel);                 
 
                     // return final transmittance if not hit anything before light
-                    if (shadFeel.objectHit->areaLight == scene.lights[index]) break;
+                    if (shadFeel.objectHit->areaLight == scene.lights[index]) {
+                        // Update transmittance for current ray segment
+                        if (light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
+                    } else {
+                        Li = Color3f(0.f);
+                    }
 
-                    // Generate next ray segment
-                    light_ray = shadFeel.SpawnRay(wiW);
-                }
                 Li *= Tr;
 
                 if (!IsBlack(Li)) {
@@ -104,8 +97,8 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
                             Li = lightIsect.Le(-wiW);
                     } else
                         Li = light->Le(ray);
-                    if (!IsBlack(Li))
-                        Ld += Li * Tr * weightMedium;
+//                    if (!IsBlack(Li))
+//                        Ld += Li * Tr * weightMedium;
                 }
             }
 
@@ -163,12 +156,12 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         }
 
         // russian roulette termination check
-        float q = sampler->Get1D();
-        float E = glm::max(energy.x, glm::max(energy.y, energy.z));
-        if (depth < 3) {
-            if (E < q) break;
-            energy /= (1 - q);
-        }
+//        float q = sampler->Get1D();
+//        float E = glm::max(energy.x, glm::max(energy.y, energy.z));
+//        if (depth < 3) {
+//            if (E < q) break;
+//            energy /= (1 - q);
+//        }
 
         // loop updates
         depth--;
