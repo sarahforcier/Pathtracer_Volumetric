@@ -8,10 +8,7 @@ bool Primitive::Intersect(const Ray &r, Intersection *isect) const
 {
     if(!shape->Intersect(r, isect)) return false;
     isect->objectHit = this;
-    // set the medium interface at the intersection point
-    //if (mediumInterface.isMediumTransition()) isect->mediumInterface = mediumInterface;
-    //else isect->mediumInterface = MediumInterface(r.medium);
-    // We create a BSDF for this intersection in our Integrator classes
+    isect->mediumInterface = mediumInterface;
     return true;
 }
 

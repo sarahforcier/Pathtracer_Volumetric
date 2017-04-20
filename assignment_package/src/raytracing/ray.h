@@ -6,6 +6,7 @@ class Medium;
 class Ray
 {
 public:
+    Ray(const Point3f &o, const Vector3f &d, std::shared_ptr<Medium> medium);
     Ray(const Point3f &o, const Vector3f &d);
     Ray(const glm::vec4 &o, const glm::vec4 &d);
     Ray(const Ray &r);
@@ -13,6 +14,9 @@ public:
     //Return a copy of this ray that has been transformed
     //by the input transformation matrix.
     Ray GetTransformedCopy(const Matrix4x4 &T) const;
+    Point3f operator() (float t) const {
+        return origin + t * direction;
+    }
 
     Point3f origin;
     Vector3f direction;

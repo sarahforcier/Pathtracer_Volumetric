@@ -17,8 +17,6 @@ class Intersection
 public:
     Intersection();
 
-    Intersection(Point3f p, float time, std::shared_ptr<MediumInterface> mediumI) : point(p), medInterface(mediumI), t(time) {}
-
     // Ask _objectHit_ to produce a BSDF
     // based on other data stored in this
     // Intersection, e.g. the surface normal
@@ -34,15 +32,16 @@ public:
     // Instantiate a Ray that originates from this Intersection and
     // travels in direction d.
     Ray SpawnRay(const Vector3f &d) const;
+    const std::shared_ptr<Medium> GetMedium(const Vector3f &w) const;
 
     Point3f point;          // The place at which the intersection occurred
     Normal3f normalGeometric; // The surface normal at the point of intersection, NO alterations like normal mapping applied
     Point2f uv;             // The UV coordinates computed at the intersection
     float tMax;
     float t;                  // The parameterization for the ray (in world space) that generated this intersection.
-                              // t is equal to the distance from the point of intersection to the ray's origin if the ray's direction is normalized.
+    // t is equal to the distance from the point of intersection to the ray's origin if the ray's direction is normalized.
     Primitive const * objectHit;     // The object that the ray intersected, or nullptr if the ray hit nothing.
-    std::shared_ptr<MediumInterface> medInterface;
+    std::shared_ptr<MediumInterface> mediumInterface;
     std::shared_ptr<BSDF> bsdf;// The Bidirection Scattering Distribution Function found at the intersection.
 
     Vector3f tangent, bitangent; // World-space vectors that form an orthonormal basis with the surface normal.

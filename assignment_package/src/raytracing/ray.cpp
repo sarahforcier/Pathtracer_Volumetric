@@ -1,9 +1,17 @@
 #include <raytracing/ray.h>
 
+Ray::Ray(const Point3f &o, const Vector3f &d, std::shared_ptr<Medium> medium):
+    origin(o),
+    direction(d),
+    medium(medium),
+    tMax(INFINITY)
+{}
+
 Ray::Ray(const Point3f &o, const Vector3f &d):
     origin(o),
     direction(d),
-    medium(nullptr)
+    medium(nullptr),
+    tMax(INFINITY)
 {}
 
 Ray::Ray(const glm::vec4 &o, const glm::vec4 &d):

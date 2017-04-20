@@ -27,6 +27,7 @@
           "shape" : "SquarePlane",
           "name" : "Red wall",
           "material" : "matteRed",
+          "medium" : ["", "fog"],
           "transform" : {
             "translate" : [5,2.5,0],
             "rotate" : [0, -90, 0],
@@ -37,6 +38,7 @@
           "shape" : "SquarePlane",
           "name" : "Green Wall",
           "material" : "matteGreen",
+          "medium" : ["", "fog"],
           "transform" : {
             "translate" : [-5, 2.5, 0],
             "rotate" : [0,90,0],
@@ -47,6 +49,7 @@
           "shape" : "SquarePlane",
           "name" : "Back Wall",
           "material" : "matteWhite",
+          "medium" : ["", "fog"],
           "transform" : {
             "translate" : [0,2.5,5],
             "rotate" : [0,180,0],
@@ -57,6 +60,7 @@
           "shape" : "SquarePlane",
           "name" : "Ceiling Wall",
           "material" : "matteWhite",
+          "medium" : ["", "fog"],
           "transform" : {
             "translate" : [0, 7.5, 0],
             "rotate" : [90,0,0],
@@ -67,6 +71,7 @@
           "shape" : "Sphere",
           "name" : "transmissive sphere",
           "material" : "transmissiveMaterial",
+          "medium" : ["", "fog"],
           "transform" : {
             "translate" : [-1, 1.25, 0],
             "rotate" : [0,0,0],
@@ -121,8 +126,8 @@
         {
           "type" : "HomogeneousMedium",
           "name" : "fog",
-          "sigma_a" : 0.5,
-          "sigma_s": 0.5, 
+          "sigma_a" : 0.0,
+          "sigma_s": 1.0, 
           "g" : 0.7
         }
       ]

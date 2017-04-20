@@ -42,7 +42,7 @@ bool Disc::Intersect(const Ray &ray, Intersection *isect) const
     Point3f P = Point3f(t * r_loc.direction + r_loc.origin);
     //Check that P is within the bounds of the disc (not bothering to take the sqrt of the dist b/c we know the radius)
     float dist2 = (P.x * P.x + P.y * P.y);
-    if(t > 0 && dist2 <= 1.f)
+    if(t > 0 && t < ray.tMax && dist2 <= 1.f)
     {
         InitializeIntersection(isect, t, INFINITY, P);
         return true;

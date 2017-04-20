@@ -30,10 +30,6 @@ bool Scene::Intersect(Ray &ray, Intersection *isect) const
         bool result = false;
         for(std::shared_ptr<Primitive> p : primitives)
         {
-            // update medium if any primitives have outside medium
-            std::shared_ptr<Medium> outside = p->mediumInterface->outside;
-            if (outside) ray.medium = outside;
-
             Intersection testIsect;
             if(p->Intersect(ray, &testIsect))
             {
@@ -41,6 +37,7 @@ bool Scene::Intersect(Ray &ray, Intersection *isect) const
                 {
                     *isect = testIsect;
                     ray.tMax = isect->t;
+                    ray.medium = p->mediumInterface->outside;
                     result = true;
                 }
             }
@@ -55,7 +52,7 @@ bool Scene::IntersectTr(Ray& ray, std::shared_ptr<Sampler> sampler, Intersection
     while (true) {
         bool hitSurface = Intersect(ray, isect);
         // accumulate beam transmittance for ray segment
-        if (ray.medium) *Tr *= ray.medium->Tr(ray, sampler);
+        if (ray.medium) *Tr *= ray.medium->Tr(ray);
         // check for termination
         if (!hitSurface) return false;
         if (!isect->objectHit->GetMaterial()) return true;

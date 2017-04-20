@@ -81,7 +81,7 @@ bool Cube::Intersect(const Ray& r, Intersection* isect) const
             tMin = t_f;
             tMax = INFINITY;
         }
-        if(tMin < 0) return false;
+        if(tMin < 0 || tMin > r.tMax) return false;
         //Lastly, transform the point found in object space by T
         glm::vec4 P = glm::vec4(r_loc.origin + tMin*r_loc.direction, 1);
         InitializeIntersection(isect, tMin, tMax, Point3f(P));

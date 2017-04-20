@@ -29,82 +29,93 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         Intersection isect;
         bool hit = scene.Intersect(ray, &isect);
 
-        // sample medium
-        Intersection mi; // mi
-        if (ray.medium) energy *= ray.medium->Sample(ray, sampler->Get1D(), &mi);
+        // sample medium ????????????????????
+        if (ray.medium) {
+            energy *= ray.medium->Sample(ray, sampler->Get1D(), &isect);
+        }
         if (IsBlack(energy)) break;
 
         // handle intersection with medium
         Vector3f woW = -ray.direction;
-        if (mi.medInterface) {
+        if (isect.mediumInterface) {
             Color3f Ld = Color3f(0.f);
-            Float lightPdf = 0, scatteringPdf = 0;
+            float lightPdf = 0, phaseLight = 0;
+
             // Sample light source with multiple importance sampling
             int index = std::min((int)(sampler->Get1D() * num), num - 1);
             const std::shared_ptr<Light> &light = scene.lights[index];
-            Color3f Li = light->Sample_Li(mi, sampler->Get2D(), &wiW, &lightPdf);
-            float f = 0.f;
-            // Evaluate phase function for light sampling strategy
-            if (lightPdf > 0.f && !IsBlack(Li)) scatteringPdf = mi.medInterface->inside->p(woW, wiW);
+            Color3f Li = light->Sample_Li(isect, sampler->Get2D(), &wiW, &lightPdf);
 
-            if (scatteringPdf > 0.f) {
+            // Evaluate phase function for light sampling
+            // phase function = pdf
+            if (lightPdf > 0.f && !IsBlack(Li)) phaseLight = isect.mediumInterface->outside->p(woW, wiW);
+
+            if (phaseLight > 0.f) {
                 // Compute effect of visibility for light source sample
-                Ray light_ray(mi.SpawnRay(wiW));
+                Ray light_ray(isect.SpawnRay(wiW));
                 Color3f Tr(1.f);
                 while (true) {
-                    Intersection inter;
-                    bool hitSurface = scene.Intersect(ray, &inter);
-                    // Handle opaque surface along ray's path
-                    if (hitSurface && isect.objectHit->GetMaterial() != nullptr)
-                        return Color3f(0.f);
+                    Intersection shadFeel;
+                    bool hitSurface = scene.Intersect(light_ray, &shadFeel);
+
+                    // opaque surface along ray's path to light -> occluded -> no light
+                    if (hitSurface && shadFeel.objectHit->GetMaterial() != nullptr) {
+                         Li = Color3f(0.f);
+                         break;
+                    }
 
                     // Update transmittance for current ray segment
-                    if (ray.medium) Tr *= ray.medium->Tr(light_ray, sampler);
+                    if (light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
 
-                    // Generate next ray segment or return final transmittance
-                    if (!hitSurface) break;
-                    light_ray = inter.SpawnRay(wiW);
+                    // return final transmittance if not hit anything before light
+                    if (shadFeel.objectHit->areaLight == scene.lights[index]) break;
+
+                    // Generate next ray segment
+                    light_ray = shadFeel.SpawnRay(wiW);
                 }
                 Li *= Tr;
 
                 if (!IsBlack(Li)) {
-                    Float weight = PowerHeuristic(1, lightPdf, 1, f);
-                    Ld += scatteringPdf * Li * weight / lightPdf;
+                    Float weightLight = PowerHeuristic(1, lightPdf, 1, phaseLight);
+                    Ld += phaseLight * Li * weightLight / lightPdf;
                 }
             }
 
             // Sample scattered direction for medium interactions
-            Color3f p = mi.medInterface->inside->Sample_p(woW, &wiW, sampler->Get2D());
+            float phaseMedium = isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
 
-            if (!IsBlack(p)) {
+            if (phaseMedium > 0.f) {
                 // Account for light contributions along sampled direction _wi_
-                Float weight = 1;
-                lightPdf = light->Pdf_Li(mi, wiW);
-                if (lightPdf != 0) {
-                    weight = PowerHeuristic(1, p.x, 1, lightPdf);
+                float weightMedium = 1;
+                lightPdf = light->Pdf_Li(isect, wiW);
+                if (lightPdf > 0.f) {
+                    weightMedium = PowerHeuristic(1, phaseMedium, 1, lightPdf);
 
                     // Find intersection and compute transmittance
                     Intersection lightIsect;
-                    Ray ray = mi.SpawnRay(wiW);
+                    Ray ray = isect.SpawnRay(wiW);
                     Color3f Tr(1.f);
                     bool foundSurfaceInteraction = scene.IntersectTr(ray, sampler, &lightIsect, &Tr);
 
                     // Add light contribution from material sampling
                     Color3f Li(0.f);
                     if (foundSurfaceInteraction) {
-                        if (lightIsect.objectHit->areaLight == scene.lights[index]) Li = lightIsect.Le(-wiW);
-                    } else Li = light->Le(ray);
-                    if (!IsBlack(Li)) Ld += f * Li * Tr * weight / p;
+                        if (lightIsect.objectHit->areaLight == scene.lights[index])
+                            Li = lightIsect.Le(-wiW);
+                    } else
+                        Li = light->Le(ray);
+                    if (!IsBlack(Li))
+                        Ld += Li * Tr * weightMedium;
                 }
             }
 
             color += energy * Ld;
-            mi.medInterface->inside->Sample_p(woW, &wiW, sampler->Get2D());
+            isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
 
-            // Step 1: increment along ray by ds (ds is RayEpsilon in SpawnRay)
-            ray = mi.SpawnRay(wiW);
+            // spawn ray from sampled point in medium
+            ray = isect.SpawnRay(wiW);
 
-            // handle intersection with surface (full lighting)
+        // handle intersection with surface (full lighting)
         } else {
             if (!hit) break;
             if (!isect.objectHit->GetMaterial()) {

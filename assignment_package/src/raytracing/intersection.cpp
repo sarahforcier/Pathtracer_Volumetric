@@ -7,7 +7,7 @@ Intersection::Intersection():
     t(-1),
     tMax(INFINITY),
     objectHit(nullptr),
-    medInterface(nullptr),
+    mediumInterface(nullptr),
     bsdf(nullptr),
     tangent(0.f), bitangent(0.f)
 {}
@@ -30,5 +30,9 @@ Ray Intersection::SpawnRay(const Vector3f &d) const
     // the same general direction as the ray direction
     originOffset = (glm::dot(d, normalGeometric) > 0) ? originOffset : -originOffset;
     Point3f o(this->point + originOffset);
-    return Ray(o, d);
+    return Ray(o, d, GetMedium(d));
+}
+
+const std::shared_ptr<Medium> Intersection::GetMedium(const Vector3f &w) const {
+    return glm::dot(w, normalGeometric) > 0 ? mediumInterface->outside : mediumInterface->inside;
 }

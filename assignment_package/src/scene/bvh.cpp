@@ -219,7 +219,7 @@ int BVHAccel::flattenBVHTree(BVHBuildNode *node, int *offset) {
     return myOffset;
 }
 
-bool BVHAccel::Intersect(const Ray &ray, Intersection *isect) const
+bool BVHAccel::Intersect(Ray &ray, Intersection *isect) const
 {
     //TODO
     if (root->nPrimitives == 0) return false;
@@ -243,6 +243,9 @@ bool BVHAccel::Intersect(const Ray &ray, Intersection *isect) const
                         if (inter.t < t) {
                             t = inter.t;
                             *isect = inter;
+                            ray.tMax = isect->t;
+                            if (primitives[node->primitivesOffset + i]->mediumInterface)
+                                ray.medium = primitives[node->primitivesOffset + i]->mediumInterface->outside;
                         }
                     }
                 }
