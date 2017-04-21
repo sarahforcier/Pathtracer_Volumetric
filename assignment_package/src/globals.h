@@ -181,6 +181,6 @@ inline Vector3f SphericalDirection(float sinTheta, float cosTheta, float phi,
            cosTheta * z;
 }
 
-inline bool IsBlack(Color3f &color) {
-    return color == Color3f(0.f);
+inline bool IsBlack(Color3f &c) {
+    return (c.r < 0.00001f && c.g < 0.00001f && c.b < 0.00001f);
 }
