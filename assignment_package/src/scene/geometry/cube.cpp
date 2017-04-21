@@ -42,7 +42,7 @@ Normal3f GetCubeNormal(const Point3f& P)
 }
 
 
-bool Cube::Intersect(const Ray& r, Intersection* isect) const
+bool Cube::Intersect(Ray& r, Intersection* isect) const
 {
     //Transform the ray
     Ray r_loc = r.GetTransformedCopy(transform.invT());

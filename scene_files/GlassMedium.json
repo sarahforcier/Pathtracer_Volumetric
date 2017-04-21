@@ -127,7 +127,8 @@
         {
           "type" : "HomogeneousMedium",
           "name" : "fog",
-          "sigma_a" : 0.0,
+          "density" : 0.1,
+          "sigma_a" : 0.1,
           "sigma_s": 1.0, 
           "g" : 0.99
         }

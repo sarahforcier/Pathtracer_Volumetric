@@ -559,10 +559,11 @@ bool JSONReader::LoadMedium(QJsonObject &medium, const QStringRef &local_path, Q
 
     if(QString::compare(type, QString("HomogeneousMedium")) == 0)
     {
+        float density = static_cast< float >(medium["density"].toDouble());
         float sigma_a = static_cast< float >(medium["sigma_a"].toDouble());
         float sigma_s = static_cast< float >(medium["sigma_s"].toDouble());
         float g = static_cast< float >(medium["g"].toDouble());
-        auto result = std::make_shared<HomogeneousMedium>(sigma_a, sigma_s, g);
+        auto result = std::make_shared<HomogeneousMedium>(sigma_a, sigma_s, g, density);
         med_map->insert(medium["name"].toString(), result);
     }
     else

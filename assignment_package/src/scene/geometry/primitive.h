@@ -24,7 +24,7 @@ public:
         : shape(shape), material(material), mediumInterface(medium), areaLight(areaLight) {}
     // Returns whether or not the given Ray intersects this Primitive.
     // Passes additional intersection data through the Intersection pointer
-    virtual bool Intersect(const Ray& r, Intersection* isect) const;
+    virtual bool Intersect(Ray& r, Intersection* isect) const;
 
     const AreaLight* GetAreaLight() const;
     const Material* GetMaterial() const;

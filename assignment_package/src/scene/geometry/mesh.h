@@ -11,7 +11,7 @@ public:
     Triangle(const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec3 &n1, const glm::vec3 &n2, const glm::vec3 &n3, const glm::vec2 &t1, const glm::vec2 &t2, const glm::vec2 &t3);
 
 
-    virtual bool Intersect(const Ray &ray, Intersection *isect) const;
+    virtual bool Intersect(Ray &ray, Intersection *isect) const;
     virtual Point2f GetUVCoordinates(const Point3f &point) const;
     virtual void ComputeTBN(const Point3f& P, Normal3f* nor, Vector3f* tan, Vector3f* bit) const;
     virtual void ComputeTriangleTBN(const Point3f& P, Normal3f* nor, Vector3f* tan, Vector3f* bit, const Point2f& uv) const;

@@ -25,7 +25,7 @@ void Sphere::ComputeTBN(const Point3f& P, Normal3f* nor, Vector3f* tan, Vector3f
     *bit = glm::normalize(glm::cross(*nor, *tan));
 }
 
-bool Sphere::Intersect(const Ray &ray, Intersection *isect) const
+bool Sphere::Intersect(Ray &ray, Intersection *isect) const
 {
     //Transform the ray
     Ray r_loc = ray.GetTransformedCopy(transform.invT());

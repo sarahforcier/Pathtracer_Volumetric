@@ -32,7 +32,7 @@ Intersection Disc::Sample(const Point2f &xi, Float *pdf) const {
     return inter;
 }
 
-bool Disc::Intersect(const Ray &ray, Intersection *isect) const
+bool Disc::Intersect(Ray &ray, Intersection *isect) const
 {
     //Transform the ray
     Ray r_loc = ray.GetTransformedCopy(transform.invT());
