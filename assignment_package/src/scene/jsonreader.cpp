@@ -559,6 +559,7 @@ bool JSONReader::LoadMedium(QJsonObject &medium, const QStringRef &local_path, Q
 
     if(QString::compare(type, QString("HomogeneousMedium")) == 0)
     {
+        float density = static_cast< float >(medium["density"].toDouble());
         float sigma_a = static_cast< float >(medium["sigma_a"].toDouble());
         float sigma_s = static_cast< float >(medium["sigma_s"].toDouble());
         float g = static_cast< float >(medium["g"].toDouble());

@@ -68,7 +68,7 @@ Normal3f Triangle::GetNormal(const Point3f &P) const
 
 
 //The ray in this function is not transformed because it was *already* transformed in Mesh::GetIntersection
-bool Triangle::Intersect(const Ray& r, Intersection* isect) const
+bool Triangle::Intersect(Ray& r, Intersection* isect) const
 {
     //1. Ray-plane intersection
     float t =  glm::dot(planeNormal, (points[0] - r.origin)) / glm::dot(planeNormal, r.direction);

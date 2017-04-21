@@ -16,13 +16,13 @@ public:
         for (std::shared_ptr<Primitive> s : primitives) bound = Union(bound, s->WorldBound());
         return bound;
     }
-    virtual bool Intersect(const Ray &ray, Intersection *isect) const;
+    virtual bool Intersect(Ray &ray, Intersection *isect) const;
 
     std::vector<std::shared_ptr<Primitive>> primitives;
     std::vector<operation> operators;
 
 private:
     CSGNode *recursiveBuild(int* shape_num, int* oper_num);
-    bool recursiveIntersect(CSGNode* node, const Ray &ray, Intersection *isect) const;
+    bool recursiveIntersect(CSGNode* node, Ray &ray, Intersection *isect) const;
     CSGNode *root = nullptr;
 };

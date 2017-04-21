@@ -52,7 +52,7 @@ CSG::CSG(std::vector<std::shared_ptr<Primitive>> ps, std::vector<operation> ops)
     root = recursiveBuild(&shape_num, &oper_num);
 }
 
-bool CSG::recursiveIntersect(CSGNode* node, const Ray &ray, Intersection *isect) const {
+bool CSG::recursiveIntersect(CSGNode* node, Ray &ray, Intersection *isect) const {
     bool hit = false;
     Intersection inter0, inter1;
     bool hit0, hit1;
@@ -113,6 +113,6 @@ bool CSG::recursiveIntersect(CSGNode* node, const Ray &ray, Intersection *isect)
     return hit;
 }
 
-bool CSG::Intersect(const Ray &ray, Intersection *isect) const {
+bool CSG::Intersect(Ray &ray, Intersection *isect) const {
     return recursiveIntersect(root, ray, isect);
 }

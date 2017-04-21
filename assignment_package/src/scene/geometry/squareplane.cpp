@@ -32,7 +32,7 @@ Intersection SquarePlane::Sample(const Point2f &xi, Float *pdf) const {
     return inter;
 }
 
-bool SquarePlane::Intersect(const Ray &ray, Intersection *isect) const
+bool SquarePlane::Intersect(Ray &ray, Intersection *isect) const
 {
     //Transform the ray
     Ray r_loc = ray.GetTransformedCopy(transform.invT());

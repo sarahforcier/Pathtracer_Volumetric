@@ -19,7 +19,7 @@ public:
 
     virtual ~Shape(){}
     // Find the intersection of the ray with this Shape
-    virtual bool Intersect(const Ray &ray, Intersection *isect) const = 0;
+    virtual bool Intersect(Ray &ray, Intersection *isect) const = 0;
     virtual Point2f GetUVCoordinates(const Point3f &point) const = 0;
     // Given a t parameterization of the Ray, compute all requisite intersection information
     virtual void InitializeIntersection(Intersection* isect, float t, float tMax, Point3f pLocal) const;

@@ -30,7 +30,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         Intersection isect;
         bool hit = scene.Intersect(ray, &isect);
 
-        // sample medium ????????????????????
+        // sample medium
         if (ray.medium) {
             energy *= ray.medium->Sample(ray, distToLight, &isect);
         } else {
@@ -59,11 +59,11 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
                 Color3f Tr(1.f);
                 Intersection shadFeel;
                 bool hitSurface = scene.Intersect(light_ray, &shadFeel);
-                distToLight = shadFeel.t;
                 // return final transmittance if not hit anything before light
-                if (shadFeel.objectHit->areaLight == scene.lights[index]) {
+                if (hitSurface && shadFeel.objectHit->areaLight == scene.lights[index]) {
                     // Update transmittance for current ray segment
                     if (light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
+                    distToLight = shadFeel.t;
                 } else Li = Color3f(0.f);
 
                 Li *= Tr;
@@ -106,7 +106,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
 
             // spawn ray from sampled point in medium
-            ray = isect.SpawnRay(wiW);
+            ray = Ray(isect.point, wiW, ray.medium);
 
             // handle intersection with surface (full lighting)
         } else {
@@ -154,7 +154,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             // update recursive ray bounce
             ray = isect.SpawnRay(wiW);
         }
-
+        
         // russian roulette termination check
         float q = sampler->Get1D();
         float E = glm::max(energy.x, glm::max(energy.y, energy.z));
