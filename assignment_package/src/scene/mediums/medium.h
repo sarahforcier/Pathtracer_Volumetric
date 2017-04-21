@@ -31,6 +31,7 @@ struct MediumInterface {
     MediumInterface(std::shared_ptr<Medium> inside, std::shared_ptr<Medium> outside)
         : inside(inside), outside(outside) {}
     bool IsInterface() { return outside != inside;}
+    void Swap() {auto temp = outside; outside = inside; inside = temp;}
 
     std::shared_ptr<Medium> inside, outside; // nullptr to indicate vacuum
 };

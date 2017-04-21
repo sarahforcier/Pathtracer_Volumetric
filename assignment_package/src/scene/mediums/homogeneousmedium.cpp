@@ -12,7 +12,7 @@ float HomogeneousMedium::Tr(const Ray &ray) const
 float HomogeneousMedium::Sample(const Ray &ray, const float x, Intersection *inter) const
 {
     // sample a distance along the ray
-    float t = 10.f; // sample free path
+    float t = glm::min(1.f / sigma_t / density, ray.tMax); // sample free path
     float pdf = sigma_t * std::exp(-sigma_t * t);
     bool sampledMedium = t < ray.tMax;
 

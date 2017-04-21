@@ -244,8 +244,7 @@ bool BVHAccel::Intersect(Ray &ray, Intersection *isect) const
                             t = inter.t;
                             *isect = inter;
                             ray.tMax = isect->t;
-                            if (primitives[node->primitivesOffset + i]->mediumInterface)
-                                ray.medium = primitives[node->primitivesOffset + i]->mediumInterface->outside;
+                            ray.medium = isect->mediumInterface->outside;
                         }
                     }
                 }

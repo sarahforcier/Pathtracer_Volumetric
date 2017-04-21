@@ -70,7 +70,7 @@
         {
           "shape" : "Sphere",
           "name" : "Lambertsphere",
-          "material" : "matteRed",
+          "material" : "transmissiveMaterial",
           "medium" : ["", "fog"],
           "transform" : {
             "translate" : [-1, 1.25, 0],
@@ -127,6 +127,7 @@
         {
           "type" : "HomogeneousMedium",
           "name" : "fog",
+          "density" : 0.1,
           "sigma_a" : 0.0,
           "sigma_s": 1.0, 
           "g" : 0.99

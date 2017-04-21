@@ -33,6 +33,8 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         // sample medium ????????????????????
         if (ray.medium) {
             energy *= ray.medium->Sample(ray, distToLight, &isect);
+        } else {
+            if (!hit) break;
         }
         if (IsBlack(energy)) break;
 
@@ -73,32 +75,32 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             }
 
             // Sample scattered direction for medium interactions
-//            float phaseMedium = isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
+            float phaseMedium = isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
 
-//            if (phaseMedium > 0.f) {
-//                // Account for light contributions along sampled direction _wi_
-//                float weightMedium = 1;
-//                lightPdf = light->Pdf_Li(isect, wiW);
-//                if (lightPdf > 0.f) {
-//                    weightMedium = PowerHeuristic(1, phaseMedium, 1, lightPdf);
+            if (phaseMedium > 0.f) {
+                // Account for light contributions along sampled direction _wi_
+                float weightMedium = 1;
+                lightPdf = light->Pdf_Li(isect, wiW);
+                if (lightPdf > 0.f) {
+                    weightMedium = PowerHeuristic(1, phaseMedium, 1, lightPdf);
 
-//                    // Find intersection and compute transmittance
-//                    Intersection lightIsect;
-//                    Ray ray = isect.SpawnRay(wiW);
-//                    Color3f Tr(1.f);
-//                    bool foundSurfaceInteraction = scene.IntersectTr(ray, sampler, &lightIsect, &Tr);
+                    // Find intersection and compute transmittance
+                    Intersection lightIsect;
+                    Ray ray = isect.SpawnRay(wiW);
+                    Color3f Tr(1.f);
+                    bool foundSurfaceInteraction = scene.IntersectTr(ray, sampler, &lightIsect, &Tr);
 
-//                    // Add light contribution from material sampling
-//                    Color3f Li(0.f);
-//                    if (foundSurfaceInteraction) {
-//                        if (lightIsect.objectHit->areaLight == scene.lights[index])
-//                            Li = lightIsect.Le(-wiW);
-//                    } else Li = light->Le(ray);
+                    // Add light contribution from material sampling
+                    Color3f Li(0.f);
+                    if (foundSurfaceInteraction) {
+                        if (lightIsect.objectHit->areaLight == scene.lights[index])
+                            Li = lightIsect.Le(-wiW);
+                    } else Li = light->Le(ray);
 
-//                    if (!IsBlack(Li))
-//                        Ld += Li * Tr * weightMedium;
-//                }
-//            }
+                    if (!IsBlack(Li))
+                        Ld += Li * Tr * weightMedium;
+                }
+            }
 
             color += energy * Ld;
             isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
@@ -154,12 +156,12 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         }
 
         // russian roulette termination check
-        //        float q = sampler->Get1D();
-        //        float E = glm::max(energy.x, glm::max(energy.y, energy.z));
-        //        if (depth < 3) {
-        //            if (E < q) break;
-        //            energy /= (1 - q);
-        //        }
+        float q = sampler->Get1D();
+        float E = glm::max(energy.x, glm::max(energy.y, energy.z));
+        if (depth < 3) {
+            if (E < q) break;
+            energy /= (1 - q);
+        }
 
         // loop updates
         depth--;

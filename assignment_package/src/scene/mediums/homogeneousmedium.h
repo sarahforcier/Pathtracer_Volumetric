@@ -8,8 +8,8 @@
 class HomogeneousMedium : public Medium
 {
 public:
-    HomogeneousMedium(const float &sigma_a, const float sigma_s, float g)
-        : sigma_a(sigma_a), sigma_s(sigma_s), g(g) { sigma_t = sigma_s + sigma_a;}
+    HomogeneousMedium(const float &sigma_a, const float sigma_s, float g, float density)
+        : sigma_a(sigma_a), sigma_s(sigma_s), g(g), density(density) { sigma_t = sigma_s + sigma_a;}
 
     float Tr(const Ray &ray) const;
 
@@ -29,5 +29,5 @@ public:
     float p(const Vector3f &wo, const Vector3f &wi) const;
 
 private:
-    float sigma_a, sigma_s, sigma_t, g;
+    float sigma_a, sigma_s, sigma_t, g, density;
 };
