@@ -9,7 +9,7 @@ bool Primitive::Intersect(Ray &r, Intersection *isect) const
     if(!shape->Intersect(r, isect)) return false;
     isect->objectHit = this;
     isect->mediumInterface = mediumInterface;
-    if (glm::dot(isect->normalGeometric, -r.direction) < 0.f) isect->mediumInterface->Swap();
+//    if (glm::dot(isect->normalGeometric, -r.direction) < 0.f) isect->mediumInterface->Swap();
     return true;
 }
 
