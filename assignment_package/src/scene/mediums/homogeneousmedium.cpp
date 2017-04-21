@@ -9,14 +9,14 @@ float HomogeneousMedium::Tr(const Ray &ray) const
 }
 
 // x : distance to light
-float HomogeneousMedium::Sample(const Ray &ray, const float x, Intersection *inter) const
+float HomogeneousMedium::Sample(const Ray &ray, bool *sampledMedium, Intersection *inter) const
 {
     // sample a distance along the ray
     float t = glm::min(1.f / sigma_t / density, ray.tMax); // sample free path
     float pdf = sigma_t * std::exp(-sigma_t * t);
-    bool sampledMedium = t < ray.tMax;
+    *sampledMedium = t < ray.tMax;
 
-    if (sampledMedium) { // rewrite inter
+    if (*sampledMedium) { // rewrite inter
         *inter = Intersection();
         inter->point = ray(t);
         inter->mediumInterface = std::make_shared<MediumInterface>(ray.medium);
@@ -27,7 +27,7 @@ float HomogeneousMedium::Sample(const Ray &ray, const float x, Intersection *int
     float Tr = glm::exp(-sigma_t * t * glm::length(ray.direction));
 
     // return weighting factor for in-scattering (3rd term)
-    return sampledMedium ? (Tr * sigma_s / pdf) : (Tr / pdf);
+    return *sampledMedium ? (Tr * sigma_s / pdf) : (Tr / pdf);
 }
 
 float HomogeneousMedium::Sample_p(const Vector3f &wo, Vector3f *wi, const Point2f &u) const {

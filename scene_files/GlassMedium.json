@@ -16,7 +16,7 @@
           "shape" : "SquarePlane",
           "name" : "Floor",
           "material" : "matteWhite",
-          "medium" : ["", "fog"],
+          "medium" : ["fog", "fog"],
           "transform" : {
             "translate" : [0, -2.5, 0],
             "rotate" : [-90, 0, 0],
@@ -27,7 +27,7 @@
           "shape" : "SquarePlane",
           "name" : "Red wall",
           "material" : "matteRed",
-          "medium" : ["", "fog"],
+          "medium" : ["fog", "fog"],
           "transform" : {
             "translate" : [5,2.5,0],
             "rotate" : [0, -90, 0],
@@ -38,7 +38,7 @@
           "shape" : "SquarePlane",
           "name" : "Green Wall",
           "material" : "matteGreen",
-          "medium" : ["", "fog"],
+          "medium" : ["fog", "fog"],
           "transform" : {
             "translate" : [-5, 2.5, 0],
             "rotate" : [0,90,0],
@@ -49,7 +49,7 @@
           "shape" : "SquarePlane",
           "name" : "Back Wall",
           "material" : "matteWhite",
-          "medium" : ["", "fog"],
+          "medium" : ["fog", "fog"],
           "transform" : {
             "translate" : [0,2.5,5],
             "rotate" : [0,180,0],
@@ -60,7 +60,7 @@
           "shape" : "SquarePlane",
           "name" : "Ceiling Wall",
           "material" : "matteWhite",
-          "medium" : ["", "fog"],
+          "medium" : ["fog", "fog"],
           "transform" : {
             "translate" : [0, 7.5, 0],
             "rotate" : [90,0,0],
@@ -84,7 +84,7 @@
           "shape" : "SquarePlane",
           "name" : "Light Source",
           "type" : "DiffuseAreaLight",
-          "medium" : ["", "fog"],
+          "medium" : ["fog", "fog"],
           "lightColor" : [17,12,4],
           "intensity" : 2,
           "transform" : {

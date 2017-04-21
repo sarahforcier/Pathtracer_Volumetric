@@ -20,19 +20,20 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
     BxDFType type = BSDF_DIFFUSE;
     BxDFType all = BSDF_ALL;
     int recursionLimit = depth;
-    float distToLight = INFINITY;
 
     // number of lights
     int num= scene.lights.length();
     if (num == 0) return Color3f(0.f);
+    bool sampledMedium;
 
     while (depth > 0) {
         Intersection isect;
         bool hit = scene.Intersect(ray, &isect);
 
+        sampledMedium = false;
         // sample medium
         if (ray.medium) {
-            energy *= ray.medium->Sample(ray, distToLight, &isect);
+            energy *= ray.medium->Sample(ray, &sampledMedium, &isect);
         } else {
             if (!hit) break;
         }
@@ -40,7 +41,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
 
         // handle intersection with medium
         Vector3f woW = -ray.direction;
-        if (!isect.mediumInterface->IsInterface()) {
+        if (sampledMedium) {
             Color3f Ld = Color3f(0.f);
             float lightPdf = 0, phaseLight = 0;
 
@@ -63,7 +64,6 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
                 if (hitSurface && shadFeel.objectHit->areaLight == scene.lights[index]) {
                     // Update transmittance for current ray segment
                     if (light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
-                    distToLight = shadFeel.t;
                 } else Li = Color3f(0.f);
 
                 Li *= Tr;

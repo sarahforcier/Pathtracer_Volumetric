@@ -20,7 +20,7 @@ public:
         // Lo : reflected radiance back along ray from point at surface intersection
         // Tr': Transmittance between ray origin and sampled point
         // Ls : added radiance along ray at sampled point due to volume scattering and emission
-    float Sample(const Ray &ray, const float x, Intersection *isect) const;
+    float Sample(const Ray &ray, bool* sampledMedium, Intersection *isect) const;
 
     // returns Phase pdf
     float Sample_p(const Vector3f &wo, Vector3f *wi, const Point2f &u) const;

@@ -14,7 +14,7 @@ public:
 
     // sample the integral form of the equation of transfer, consisting
     // of a surface and medium-related term
-    virtual float Sample(const Ray &ray, const float x, Intersection *isect) const = 0;
+    virtual float Sample(const Ray &ray, bool* sampledMedium, Intersection *isect) const = 0;
 
     // samples an incident direction wi and a sample value in [0, 1)^2
     // does not return pdf since a call to p() will work
