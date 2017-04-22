@@ -9,8 +9,8 @@ class Light
 {
   public:
     virtual ~Light(){}
-    Light(Transform t)
-        : transform(t), name()
+    Light(Transform t, bool delta)
+        : transform(t), name(), isDelta(delta)
     {}
 
     // Returns the light emitted along a ray that does
@@ -28,8 +28,11 @@ class Light
 
 
     QString name; // For debugging
+    bool isDelta;
 
     virtual float Pdf_Li(const Intersection &ref, const Vector3f &wi) const = 0;
+
+    virtual Point3f GetPosition() const;
 
   protected:
     const Transform transform;
@@ -38,7 +41,7 @@ class Light
 class AreaLight : public Light
 {
 public:
-    AreaLight(const Transform &t) : Light(t){}
+    AreaLight(const Transform &t) : Light(t, false){}
     // Returns the light emitted from a point on the light's surface _isect_
     // along the direction _w_, which is leaving the surface.
     virtual Color3f L(const Intersection &isect, const Vector3f &w) const = 0;

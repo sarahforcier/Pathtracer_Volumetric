@@ -9,9 +9,7 @@
         "worldUp" : [0, 1, 0],
         "fov" : 19.5,
         "width" : 400,
-        "height": 400,
-        "focalDistance": 32,
-        "lensRadius": 1.5
+        "height": 400
       },
       "primitives" : [
         {
@@ -87,32 +85,18 @@
       ],
       "lights" : [
         {
-          "shape" : "SquarePlane",
-          "name" : "Light Source Yellow",
-          "type" : "DiffuseAreaLight",
+          "name" : "Light Source",
+          "type" : "SpotLight",
+          "medium" : ["fog", "fog"],
           "lightColor" : [17,12,4],
-          "intensity" : 1,
+          "intensity" : 2,
           "transform" : {
-            "translate" : [2,7.45,0],
+            "translate" : [0,7.45,0],
             "rotate" : [90,0,0],
             "scale" : [3, 3, 1]
           },
-          "isDelta" : false,
-          "twoSided" : true
-        },
-        {
-          "shape" : "SquarePlane",
-          "name" : "Light Source Blue",
-          "type" : "DiffuseAreaLight",
-          "lightColor" : [4,12,17],
-          "intensity" : 1,
-          "transform" : {
-            "translate" : [-2,7.45,0],
-            "rotate" : [90,0,0],
-            "scale" : [3, 3, 1]
-          },
-          "isDelta" : false,
-          "twoSided" : true
+          "totalWidth" : 45,
+          "falloffStart" : 30
         }
       ],
       "materials" : [

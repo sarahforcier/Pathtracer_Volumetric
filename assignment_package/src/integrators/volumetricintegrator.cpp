@@ -61,7 +61,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
                 Intersection shadFeel;
                 bool hitSurface = scene.Intersect(light_ray, &shadFeel);
                 // return final transmittance if not hit anything before light
-                if (hitSurface && shadFeel.objectHit->areaLight == scene.lights[index]) {
+                if (hitSurface && shadFeel.objectHit->light == scene.lights[index]) {
                     // Update transmittance for current ray segment
                     if (light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
                 } else Li = Color3f(0.f);
@@ -93,7 +93,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
                     // Add light contribution from material sampling
                     Color3f Li(0.f);
                     if (foundSurfaceInteraction) {
-                        if (lightIsect.objectHit->areaLight == scene.lights[index])
+                        if (lightIsect.objectHit->light == scene.lights[index])
                             Li = lightIsect.Le(-wiW);
                     } else Li = light->Le(ray);
 
@@ -127,7 +127,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             Intersection shad_Feel;
             Ray shadowRay = isect.SpawnRay(wiW);
             if (scene.Intersect(shadowRay, &shad_Feel)) {
-                if (pdf > 0.f && shad_Feel.objectHit->areaLight == scene.lights[index])
+                if (pdf > 0.f && shad_Feel.objectHit->light == scene.lights[index])
                     gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
             }
             // bsdf
@@ -136,7 +136,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             Intersection isect_Test;
             Ray indirectRay = isect.SpawnRay(glm::normalize(wiW));
             if (pdf > 0.f && scene.Intersect(indirectRay, &isect_Test)) {
-                if (isect_Test.objectHit->areaLight == scene.lights[index])
+                if (isect_Test.objectHit->light == scene.lights[index])
                     fColor = light->L(isect_Test, -wiW) * f1 * AbsDot(wiW, isect.normalGeometric)/pdf;
             }
             float wf = PowerHeuristic(1, pdf, 1, light->Pdf_Li(isect, wiW));

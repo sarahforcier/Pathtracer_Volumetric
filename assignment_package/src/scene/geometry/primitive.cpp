@@ -1,12 +1,13 @@
 #include "primitive.h"
 
 Bounds3f Primitive::WorldBound() const {
+    if (!shape) return Bounds3f();
     return shape->WorldBound();
 }
 
 bool Primitive::Intersect(Ray &r, Intersection *isect) const
 {
-    if(!shape->Intersect(r, isect)) return false;
+    if(!shape || !shape->Intersect(r, isect)) return false;
     isect->objectHit = this;
     isect->mediumInterface = mediumInterface;
     if (glm::dot(isect->normalGeometric, -r.direction) < 0.f) {
@@ -25,11 +26,10 @@ bool Primitive::ProduceBSDF(Intersection *isect) const
     return false;
 }
 
-const AreaLight* Primitive::GetAreaLight() const
+const Light* Primitive::GetLight() const
 {
-    return areaLight.get();
+    return light.get();
 }
-
 
 const Material* Primitive::GetMaterial() const
 {

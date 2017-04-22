@@ -19,7 +19,7 @@ bool Intersection::ProduceBSDF()
 
 Color3f Intersection::Le(const Vector3f &wo) const
 {
-    const AreaLight* light = objectHit->GetAreaLight();
+    const Light* light = objectHit->GetLight();
     return light ? light->L(*this, wo) : Color3f(0.f);
 }
 
@@ -31,6 +31,18 @@ Ray Intersection::SpawnRay(const Vector3f &d) const
     originOffset = (glm::dot(d, normalGeometric) > 0) ? originOffset : -originOffset;
     Point3f o(this->point + originOffset);
     return Ray(o, d, GetMedium(d));
+}
+
+Ray Intersection::SpawnRayTo(const Point3f &p) const
+{
+    Vector3f originOffset = normalGeometric * RayEpsilon;
+    // Make sure to flip the direction of the offset so it's in
+    // the same general direction as the ray direction
+    Vector3f d(p - point);
+    originOffset = (glm::dot(d, normalGeometric) > 0) ? originOffset : -originOffset;
+    Point3f o(this->point + originOffset);
+    float tMax = glm::length(d);
+    return Ray(o, glm::normalize(d), tMax);
 }
 
 const std::shared_ptr<Medium> Intersection::GetMedium(const Vector3f &w) const {

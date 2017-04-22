@@ -11,6 +11,7 @@
 #include <scene/materials/plasticmaterial.h>
 #include <scene/mediums/homogeneousmedium.h>
 #include <scene/lights/diffusearealight.h>
+#include <scene/lights/spotlight.h>
 #include <iostream>
 
 
@@ -327,44 +328,47 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
     QString type;
     if(geometry.contains(QString("shape"))){
         type = geometry["shape"].toString();
-    }
 
-    if(QString::compare(type, QString("Mesh")) == 0)
-    {
-        Transform transform;
-        //        shape = std::make_shared<Mesh>();
-        auto mesh = std::make_shared<Mesh>();
-        if(geometry.contains(QString("filename"))) {
-            QString objFilePath = geometry["filename"].toString();
-            std::static_pointer_cast<Mesh>(mesh)->LoadOBJ(QStringRef(&objFilePath), local_path, transform);
+        if(QString::compare(type, QString("Mesh")) == 0)
+        {
+            Transform transform;
+            //        shape = std::make_shared<Mesh>();
+            auto mesh = std::make_shared<Mesh>();
+            if(geometry.contains(QString("filename"))) {
+                QString objFilePath = geometry["filename"].toString();
+                std::static_pointer_cast<Mesh>(mesh)->LoadOBJ(QStringRef(&objFilePath), local_path, transform);
+            }
         }
-    }
-    else if(QString::compare(type, QString("Sphere")) == 0)
-    {
-        shape = std::make_shared<Sphere>();
-    }
-    else if(QString::compare(type, QString("SquarePlane")) == 0)
-    {
-        shape = std::make_shared<SquarePlane>();
-    }
-    else if(QString::compare(type, QString("Cube")) == 0)
-    {
-        shape = std::make_shared<Cube>();
-    }
-    else if(QString::compare(type, QString("Disc")) == 0)
-    {
-        shape = std::make_shared<Disc>();
-    }
-    else
-    {
-        std::cout << "Could not parse the geometry!" << std::endl;
-        return NULL;
-    }
+        else if(QString::compare(type, QString("Sphere")) == 0)
+        {
+            shape = std::make_shared<Sphere>();
+        }
+        else if(QString::compare(type, QString("SquarePlane")) == 0)
+        {
+            shape = std::make_shared<SquarePlane>();
+        }
+        else if(QString::compare(type, QString("Cube")) == 0)
+        {
+            shape = std::make_shared<Cube>();
+        }
+        else if(QString::compare(type, QString("Disc")) == 0)
+        {
+            shape = std::make_shared<Disc>();
+        }
+        else
+        {
+            std::cout << "Could not parse the geometry!" << std::endl;
+            return NULL;
+        }
 
-    //load transform to shape
-    if(geometry.contains(QString("transform"))) {
-        QJsonObject transform = geometry["transform"].toObject();
-        shape->transform = LoadTransform(transform);
+        //load transform to shape
+        if(geometry.contains(QString("transform"))) {
+            QJsonObject transform = geometry["transform"].toObject();
+            shape->transform = LoadTransform(transform);
+        }
+
+
+        (*drawables).append(shape);
     }
 
     //load light type
@@ -381,6 +385,16 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
         bool twoSided = geometry.contains(QString("twoSided")) ? geometry["twoSided"].toBool() : false;
         lightType = std::make_shared<DiffuseAreaLight>(shape->transform, lightColor * intensity, shape, twoSided);
     }
+    if(QString::compare(lgtType, QString("SpotLight")) == 0)
+    {
+        Color3f lightColor = ToVec3(geometry["lightColor"].toArray());
+        Float intensity = static_cast< float >(geometry["intensity"].toDouble());
+        Float totalWidth = static_cast< float >(geometry["totalWidth"].toDouble());
+        Float falloffStart = static_cast< float >(geometry["falloffStart"].toDouble());
+        QJsonObject QJtransform = geometry["transform"].toObject();
+        Transform transform = LoadTransform(QJtransform);
+        lightType = std::make_shared<SpotLight>(transform, lightColor * intensity, totalWidth, falloffStart);
+    }
     else
     {
         std::cout << "Could not parse the geometry!" << std::endl;
@@ -388,7 +402,7 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
     }
 
 
-    auto primitive = std::make_shared<Primitive>(shape, nullptr,  std::static_pointer_cast<AreaLight>(lightType));
+    auto primitive = std::make_shared<Primitive>(shape, nullptr,  std::static_pointer_cast<Light>(lightType)); //TODO
     QMap<QString, std::shared_ptr<Material>>::iterator i;
     if(geometry.contains(QString("material"))) {
         QString material_name = geometry["material"].toString();
@@ -420,7 +434,6 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
 
     (*primitives).append(primitive);
     (*lights).append(lightType);
-    (*drawables).append(primitive->shape);
     return true;
 }
 

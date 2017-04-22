@@ -70,7 +70,7 @@
         {
           "shape" : "Sphere",
           "name" : "Lambertsphere",
-          "material" : "matteRed",
+          "material" : "transmissiveMaterial",
           "medium" : ["", "fog"],
           "transform" : {
             "translate" : [-1, 1.25, 0],
@@ -81,26 +81,25 @@
       ],
       "lights" : [
         {
-          "shape" : "SquarePlane",
           "name" : "Light Source",
-          "type" : "DiffuseAreaLight",
+          "type" : "SpotLight",
           "medium" : ["fog", "fog"],
           "lightColor" : [17,12,4],
-          "intensity" : 2,
+          "intensity" : 20,
           "transform" : {
             "translate" : [0,7.45,0],
             "rotate" : [90,0,0],
-            "scale" : [3, 3, 1]
+            "scale" : [1, 1, 1]
           },
-          "isDelta" : false,
-          "twoSided" : true
+          "totalWidth" : 45,
+          "falloffStart" : 30
         }
       ],
       "materials" : [
         {
           "type" : "MatteMaterial",
           "name" : "matteWhite",
-            "Kd" : [0.85, 0.81, 0.78],
+            "Kd" : [0.1, 0.1, 0.1],
           "sigma": 0
         },
         {
@@ -116,7 +115,7 @@
           "sigma": 0
         },
         {
-          "type": "GlassMaterial",
+          "type": "TransmissiveMaterial",
           "name": "transmissiveMaterial",
           "Kt": [0.9, 0.9, 1],
           "Kr": [1, 1, 0.2],
@@ -127,9 +126,8 @@
         {
           "type" : "HomogeneousMedium",
           "name" : "fog",
-          "density" : 0.1,
+          "density" : 0.03,
           "sigma_a" : 0.0,
-          "sigma_a" : 0.1,
           "sigma_s": 1.0, 
           "g" : 0.99
         }

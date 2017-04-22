@@ -7,6 +7,13 @@ Ray::Ray(const Point3f &o, const Vector3f &d, std::shared_ptr<Medium> medium):
     tMax(INFINITY)
 {}
 
+Ray::Ray(const Point3f &o, const Vector3f &d, float tMax):
+    origin(o),
+    direction(d),
+    medium(nullptr),
+    tMax(tMax)
+{}
+
 Ray::Ray(const Point3f &o, const Vector3f &d):
     origin(o),
     direction(d),

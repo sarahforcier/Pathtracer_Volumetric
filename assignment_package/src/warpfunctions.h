@@ -4,6 +4,10 @@
 class WarpFunctions
 {
 public:
+    static Point3f UniformSampleCone(const Point3f &sample, float cosThetaMax);
+
+    static float UniformConePDF(float cosThetaMax);
+
     // Uniformly sample a vector on a 2D disk with radius 1, centered around the origin
     static Point3f squareToDiskUniform(const Point2f &sample);
 

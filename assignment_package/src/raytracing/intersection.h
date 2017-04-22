@@ -32,6 +32,7 @@ public:
     // Instantiate a Ray that originates from this Intersection and
     // travels in direction d.
     Ray SpawnRay(const Vector3f &d) const;
+    Ray SpawnRayTo(const Point3f &p) const;
     const std::shared_ptr<Medium> GetMedium(const Vector3f &w) const;
 
     Point3f point;          // The place at which the intersection occurred

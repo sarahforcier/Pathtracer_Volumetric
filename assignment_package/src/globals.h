@@ -184,3 +184,7 @@ inline Vector3f SphericalDirection(float sinTheta, float cosTheta, float phi,
 inline bool IsBlack(Color3f &c) {
     return (c.r < 0.00001f && c.g < 0.00001f && c.b < 0.00001f);
 }
+
+inline float Radians(float deg) { return (Pi / 180.f) * deg; }
+
+inline float Degrees(float rad) { return (180.f / Pi) * rad; }

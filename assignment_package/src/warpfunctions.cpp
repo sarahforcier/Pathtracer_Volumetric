@@ -3,6 +3,19 @@
 #include <math.h>
 #include "globals.h"
 
+Point3f WarpFunctions::UniformSampleCone(const Point3f &sample, float cosThetaMax) {
+    float cosTheta = (1.f - sample[0]) + sample[0] * cosThetaMax;
+    float sinTheta = std::sqrt(1.f - cosTheta * cosTheta);
+    float phi = sample[1] * TwoPi;
+    return Point3f(std::cos(phi) * sinTheta,
+                   std::sin(phi) * sinTheta,
+                   cosTheta);
+}
+
+float WarpFunctions::UniformConePDF(float cosThetaMax) {
+    return 1.f / (TwoPi * (1.f - cosThetaMax));
+}
+
 Point3f WarpFunctions::squareToDiskUniform(const Point2f &sample)
 {
     float r = glm::sqrt(sample.x);

@@ -35,7 +35,7 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
         Intersection shad_Feel;
         Ray shadowRay = isect.SpawnRay(wiW);
         if (scene.Intersect(shadowRay, &shad_Feel)) {
-            if (pdf > 0.f && shad_Feel.objectHit->areaLight == scene.lights[index])
+            if (pdf > 0.f && shad_Feel.objectHit->light == scene.lights[index])
                 gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
         }
         // bsdf
@@ -44,7 +44,7 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
         Intersection isect_Test;
         Ray indirectRay = isect.SpawnRay(glm::normalize(wiW));
         if (pdf > 0.f && scene.Intersect(indirectRay, &isect_Test)) {
-            if (isect_Test.objectHit->areaLight == scene.lights[index])
+            if (isect_Test.objectHit->light == scene.lights[index])
                 fColor = light->L(isect_Test, -wiW) * f1 * AbsDot(wiW, isect.normalGeometric)/pdf;
         }
         float wf = PowerHeuristic(1, pdf, 1, light->Pdf_Li(isect, wiW));
