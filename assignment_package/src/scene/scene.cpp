@@ -38,7 +38,7 @@ bool Scene::Intersect(Ray &ray, Intersection *isect) const
                 {
                     *isect = testIsect;
                     ray.tMax = isect->t;
-                    ray.medium = isect->mediumInterface->outside;
+                    ray.medium = isect->mediumInterface->o ? isect->mediumInterface->outside : isect->mediumInterface->inside;
                     result = true;
                 }
             }

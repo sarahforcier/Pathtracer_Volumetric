@@ -47,6 +47,17 @@
         },
         {
           "shape" : "SquarePlane",
+          "name" : "Back Wall",
+          "material" : "texturedMaterial",
+          "medium" : ["fog", "fog"],
+          "transform" : {
+            "translate" : [0,2.5,5],
+            "rotate" : [0,180,0],
+            "scale" : [10, 10, 1]
+          }
+        },
+        {
+          "shape" : "SquarePlane",
           "name" : "Ceiling Wall",
           "material" : "matteWhite",
           "medium" : ["fog", "fog"],
@@ -54,6 +65,17 @@
             "translate" : [0, 7.5, 0],
             "rotate" : [90,0,0],
             "scale" : [10, 10, 1]
+          }
+        },
+        {
+          "shape" : "Sphere",
+          "name" : "transmissive sphere",
+          "medium" : ["", "fog"],
+          "material" : "transmissiveMaterial",
+          "transform" : {
+            "translate" : [0, -1.15, 2],
+            "rotate" : [0,0,0],
+            "scale" : [1.5,1.5,1.5]
           }
         }
       ],
@@ -65,7 +87,7 @@
           "lightColor" : [17,12,4],
           "intensity" : 40,
           "transform" : {
-            "translate" : [0,7.4,0],
+            "translate" : [0,7.4,2],
             "rotate" : [90,0,0],
             "scale" : [1, 1, 1]
           },
@@ -96,7 +118,7 @@
           "type": "GlassMaterial",
           "name": "transmissiveMaterial",
           "Kt": [0.9, 0.9, 1],
-          "Kr": [1, 1, 0.2],
+          "Kr": [0.2, 0.8, 1],
           "eta": 1.55
         },
         {

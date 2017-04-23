@@ -4,11 +4,7 @@ Color3f SpotLight::Sample_Li(const Intersection &ref, const Point2f &xi,
                                      Vector3f *wi, Float *pdf) const {
     *wi = glm::normalize(pLight - ref.point);
     *pdf = 1.f;
-    Color3f color = I * Falloff(-*wi) / glm::length2(pLight - ref.point);
-    if (!IsBlack(color)) {
-        std::cout << "from where?";
-    }
-    return color;
+    return I * Falloff(-*wi) / glm::length2(pLight - ref.point);
 }
 
 float SpotLight::Falloff(const Vector3f &w) const {

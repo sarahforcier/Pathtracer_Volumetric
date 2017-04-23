@@ -31,9 +31,10 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         bool hit = scene.Intersect(ray, &isect);
 
         // sample medium
-        sampledMedium = sampler->Get1D();
+        sampledMedium = -1.f;
         if (ray.medium) {
 //            energy *= ray.medium->Sample(ray, &sampledMedium, &isect);
+            sampledMedium = sampler->Get1D();
             ray.medium->Sample(ray, &sampledMedium, &isect);
         } else {
             if (!hit) break;
@@ -45,6 +46,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
         if (sampledMedium > 0.f) {
             Color3f Ld = Color3f(0.f);
             float lightPdf = 0, phaseLight = 0;
+            std::shared_ptr<Medium> outside = (isect.mediumInterface->o) ? isect.mediumInterface->outside : isect.mediumInterface->inside;
 
             // Sample light source with multiple importance sampling
             int index = std::min((int)(sampler->Get1D() * num), num - 1);
@@ -53,7 +55,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
 
             // Evaluate phase function for light sampling
             // phase function = pdf
-            if (lightPdf > 0.f && !IsBlack(Li)) phaseLight = isect.mediumInterface->outside->p(woW, wiW);
+            if (lightPdf > 0.f && !IsBlack(Li)) phaseLight = outside->p(woW, wiW);
 
             if (phaseLight > 0.f) {
                 // Compute effect of visibility for light source sample
@@ -78,7 +80,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             }
 
             // Sample scattered direction for medium interactions
-            float phaseMedium = isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
+            float phaseMedium = outside->Sample_p(woW, &wiW, sampler->Get2D());
 
             if (phaseMedium > 0.f) {
                 // Account for light contributions along sampled direction _wi_
@@ -106,7 +108,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             }
 
             color += energy * Ld;
-            isect.mediumInterface->outside->Sample_p(woW, &wiW, sampler->Get2D());
+            outside->Sample_p(woW, &wiW, sampler->Get2D());
 
             // spawn ray from sampled point in medium
             ray = Ray(isect.point, wiW, ray.medium);

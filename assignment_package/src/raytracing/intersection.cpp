@@ -46,5 +46,7 @@ Ray Intersection::SpawnRayTo(const Point3f &p) const
 }
 
 const std::shared_ptr<Medium> Intersection::GetMedium(const Vector3f &w) const {
-    return glm::dot(w, normalGeometric) > 0 ? mediumInterface->outside : mediumInterface->inside;
+    return glm::dot(w, normalGeometric) > 0 ?
+                (mediumInterface->o ? mediumInterface->outside : mediumInterface->inside)
+              : (mediumInterface->o ? mediumInterface->inside : mediumInterface->outside);
 }

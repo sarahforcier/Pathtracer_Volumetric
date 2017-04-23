@@ -27,13 +27,14 @@ public:
 // represented by the surface of a geometric primitive
 struct MediumInterface {
     MediumInterface(std::shared_ptr<Medium> medium)
-        : inside(medium), outside(medium) {}
+        : inside(medium), outside(medium), o(true) {}
     MediumInterface(std::shared_ptr<Medium> inside, std::shared_ptr<Medium> outside)
-        : inside(inside), outside(outside) {}
+        : inside(inside), outside(outside), o(true) {}
     bool IsInterface() { return outside != inside;}
-    void Swap() {std::shared_ptr<Medium> temp = outside; outside = inside; inside = temp;}
+    void Swap() {o = !o;}
 
     std::shared_ptr<Medium> inside, outside; // nullptr to indicate vacuum
+    bool o; // true when outside primitive
 };
 
 inline float PhaseHG(float cosTheta, float g) {
