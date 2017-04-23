@@ -30,24 +30,30 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
         const std::shared_ptr<Light> &light = scene.lights[index];
         Color3f li2 = light->Sample_Li(isect, sampler->Get2D(), &wiW, &pdf);
         Color3f f2 = isect.bsdf->f(woW, wiW);
-        float wg = PowerHeuristic(1, pdf, 1, isect.bsdf->Pdf(woW, wiW));
+        float wg = 1.f, wf = 1.f;
         Color3f gColor(0.f);
         Intersection shad_Feel;
-        Ray shadowRay = isect.SpawnRay(wiW);
+        Ray shadowRay = (light->isDelta) ? isect.SpawnRayTo(light->GetPosition()) : isect.SpawnRay(wiW);
         if (scene.Intersect(shadowRay, &shad_Feel)) {
-            if (pdf > 0.f && shad_Feel.objectHit->light == scene.lights[index])
+            if (pdf > 0.f && shad_Feel.objectHit->light == scene.lights[index]) {
+                wg = PowerHeuristic(1, pdf, 1, isect.bsdf->Pdf(woW, wiW));
                 gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
-        }
+            }
+        } else if (light->isDelta) gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
+
         // bsdf
-        Color3f f1 = isect.bsdf->Sample_f(woW, &wiW, sampler->Get2D(), &pdf);
         Color3f fColor(0.f);
-        Intersection isect_Test;
-        Ray indirectRay = isect.SpawnRay(glm::normalize(wiW));
-        if (pdf > 0.f && scene.Intersect(indirectRay, &isect_Test)) {
-            if (isect_Test.objectHit->light == scene.lights[index])
-                fColor = light->L(isect_Test, -wiW) * f1 * AbsDot(wiW, isect.normalGeometric)/pdf;
+        if (!light->isDelta) {
+            Color3f f1 = isect.bsdf->Sample_f(woW, &wiW, sampler->Get2D(), &pdf);
+            Intersection isect_Test;
+            Ray indirectRay = isect.SpawnRay(glm::normalize(wiW));
+            if (pdf > 0.f && scene.Intersect(indirectRay, &isect_Test)) {
+                if (isect_Test.objectHit->light == scene.lights[index])
+                    fColor = light->L(isect_Test, -wiW) * f1 * AbsDot(wiW, isect.normalGeometric)/pdf;
+            }
+            wf = PowerHeuristic(1, pdf, 1, light->Pdf_Li(isect, wiW));
         }
-        float wf = PowerHeuristic(1, pdf, 1, light->Pdf_Li(isect, wiW));
+
         Color3f d_color = float(num) * (wf * fColor + wg * gColor);
 
         color += energy * d_color;

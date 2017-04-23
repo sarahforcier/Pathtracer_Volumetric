@@ -385,7 +385,7 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
         bool twoSided = geometry.contains(QString("twoSided")) ? geometry["twoSided"].toBool() : false;
         lightType = std::make_shared<DiffuseAreaLight>(shape->transform, lightColor * intensity, shape, twoSided);
     }
-    if(QString::compare(lgtType, QString("SpotLight")) == 0)
+    else if(QString::compare(lgtType, QString("SpotLight")) == 0)
     {
         Color3f lightColor = ToVec3(geometry["lightColor"].toArray());
         Float intensity = static_cast< float >(geometry["intensity"].toDouble());
