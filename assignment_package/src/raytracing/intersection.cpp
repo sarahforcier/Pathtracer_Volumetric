@@ -42,7 +42,7 @@ Ray Intersection::SpawnRayTo(const Point3f &p) const
     originOffset = (glm::dot(d, normalGeometric) > 0) ? originOffset : -originOffset;
     Point3f o(this->point + originOffset);
     float tMax = glm::length(d);
-    return Ray(o, glm::normalize(d), tMax);
+    return Ray(o, glm::normalize(d), GetMedium(d), tMax);
 }
 
 const std::shared_ptr<Medium> Intersection::GetMedium(const Vector3f &w) const {

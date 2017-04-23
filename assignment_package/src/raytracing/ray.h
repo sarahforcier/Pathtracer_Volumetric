@@ -6,8 +6,7 @@ class Medium;
 class Ray
 {
 public:
-    Ray(const Point3f &o, const Vector3f &d, std::shared_ptr<Medium> medium);
-    Ray(const Point3f &o, const Vector3f &d, float tMax);
+    Ray(const Point3f &o, const Vector3f &d, std::shared_ptr<Medium> medium, float tMax = INFINITY);
     Ray(const Point3f &o, const Vector3f &d);
     Ray(const glm::vec4 &o, const glm::vec4 &d);
     Ray(const Ray &r);

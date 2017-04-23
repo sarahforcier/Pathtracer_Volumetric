@@ -47,17 +47,6 @@
         },
         {
           "shape" : "SquarePlane",
-          "name" : "Back Wall",
-          "material" : "texturedMaterial",
-          "medium" : ["fog", "fog"],
-          "transform" : {
-            "translate" : [0,2.5,5],
-            "rotate" : [0,180,0],
-            "scale" : [10, 10, 1]
-          }
-        },
-        {
-          "shape" : "SquarePlane",
           "name" : "Ceiling Wall",
           "material" : "matteWhite",
           "medium" : ["fog", "fog"],
@@ -65,17 +54,6 @@
             "translate" : [0, 7.5, 0],
             "rotate" : [90,0,0],
             "scale" : [10, 10, 1]
-          }
-        },
-        {
-          "shape" : "Sphere",
-          "name" : "Lambertsphere",
-          "material" : "transmissiveMaterial",
-          "medium" : ["", "fog"],
-          "transform" : {
-            "translate" : [-1, 1.25, 0],
-            "rotate" : [0,0,0],
-            "scale" : [2, 2, 2]
           }
         }
       ],
@@ -132,8 +110,8 @@
         {
           "type" : "HomogeneousMedium",
           "name" : "fog",
-          "density" : 0.03,
-          "sigma_a" : 0.25,
+          "density" : 0.05,
+          "sigma_a" : 0.1,
           "sigma_s": 0.5, 
           "g" : 0.99
         }

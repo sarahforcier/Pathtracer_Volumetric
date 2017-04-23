@@ -25,6 +25,7 @@ void Scene::SetCamera(const Camera &c)
 
 bool Scene::Intersect(Ray &ray, Intersection *isect) const
 {
+    ray.medium = primitives[0]->mediumInterface->outside;
     if(bvh) return bvh->Intersect(ray, isect);
     else {
         bool result = false;
