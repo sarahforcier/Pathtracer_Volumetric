@@ -1,7 +1,7 @@
 #pragma once
 
 #include "light.h"
-#include "warpfunctions.h"
+//#include "warpfunctions.h"
 
 class SpotLight : public Light
 {
@@ -22,6 +22,7 @@ public:
     float Falloff(const Vector3f &w) const;
     Color3f Power() const;
     virtual Point3f GetPosition() const;
+    virtual void Preprocess(const Scene &scene) {}
 
     // Member variables
     const Color3f I;

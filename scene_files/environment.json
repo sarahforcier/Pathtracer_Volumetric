@@ -1,0 +1,67 @@
+{
+  "frames" :[
+    {
+    "frameNumber" : 0,
+    "scene" : {
+      "camera" : {
+        "target" : [0, 2.5, 0],
+        "eye" : [0, 5.5, -30],
+        "worldUp" : [0, 1, 0],
+        "fov" : 19.5,
+        "width" : 400,
+        "height": 400
+      },
+      "primitives" : [
+        {
+          "shape" : "SquarePlane",
+          "name" : "Floor",
+          "material" : "matteWhite",
+          "transform" : {
+            "translate" : [0, -2.5, 0],
+            "rotate" : [-90, 0, 0],
+            "scale" : [10, 10, 1]
+          }
+        },
+        {
+          "shape" : "Sphere",
+          "name" : "chromeSphere",
+          "material" : "chromeMirror",
+          "transform" : {
+            "translate" : [0, -1.15, 2],
+            "rotate" : [0,0,0],
+            "scale" : [1.5,1.5,1.5]
+          }
+        }
+      ],
+      "lights" : [
+        {
+          "name" : "Light Source",
+          "type" : "EnvironmentLight",
+          "lightColor" : [17,12,4],
+          "intensity" : 2,
+          "transform" : {
+            "translate" : [0,0,0],
+            "rotate" : [0,0,0],
+            "scale" : [1, 1, 1]
+          },
+          "map": "sphereMap.jpg"
+        }
+      ],
+      "materials" : [
+        {
+          "type" : "MatteMaterial",
+          "name" : "matteWhite",
+            "Kd" : [0.1, 0.1, 0.1],
+          "sigma": 0
+        },
+        {
+          "type": "MirrorMaterial",
+          "name": "chromeMirror",
+          "Kr": [1, 1, 1],
+          "roughness": 0.05
+        }
+      ]
+    }
+  }
+]
+}

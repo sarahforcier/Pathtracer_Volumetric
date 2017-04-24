@@ -193,6 +193,7 @@ BVHAccel::BVHAccel(const std::vector<std::shared_ptr<Primitive> > &p, int maxPri
     int offset = 0;
     nodes = std::vector<std::shared_ptr<LinearBVHNode>>(totalNodes);
     flattenBVHTree(root, &offset);
+    worldBound = root->bounds;
     std::cout << "BVH Build Time: " << elapsedTime.elapsed() << std::endl;
 }
 

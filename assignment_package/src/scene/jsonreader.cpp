@@ -12,6 +12,7 @@
 #include <scene/mediums/homogeneousmedium.h>
 #include <scene/lights/diffusearealight.h>
 #include <scene/lights/spotlight.h>
+#include <scene/lights/environmentlight.h>
 #include <iostream>
 
 
@@ -394,6 +395,16 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
         QJsonObject QJtransform = geometry["transform"].toObject();
         Transform transform = LoadTransform(QJtransform);
         lightType = std::make_shared<SpotLight>(transform, lightColor * intensity, totalWidth, falloffStart);
+    }
+    else if(QString::compare(lgtType, QString("EnvironmentLight")) == 0)
+    {
+        Color3f lightColor = ToVec3(geometry["lightColor"].toArray());
+        Float intensity = static_cast< float >(geometry["intensity"].toDouble());
+        QJsonObject QJtransform = geometry["transform"].toObject();
+        Transform transform = LoadTransform(QJtransform);
+        QString img_filepath = local_path.toString().append(geometry["map"].toString());
+        std::shared_ptr<QImage> textureMap = std::make_shared<QImage>(img_filepath);
+        lightType = std::make_shared<EnvironmentLight>(transform, lightColor * intensity, textureMap);
     }
     else
     {

@@ -61,6 +61,7 @@ SOURCES += \
     $$PWD/scene/geometry/cylinder.cpp \
     $$PWD/scene/mediums/homogeneousmedium.cpp \
     $$PWD/scene/lights/spotlight.cpp
+    $$PWD/scene/lights/environmentlight.cpp
 
 
 HEADERS += \
@@ -124,4 +125,5 @@ HEADERS += \
     $$PWD/scene/geometry/cylinder.h \
     $$PWD/scene/mediums/homogeneousmedium.h \
     $$PWD/scene/mediums/medium.h \
-    $$PWD/scene/lights/spotlight.h
+    $$PWD/scene/lights/spotlight.h \
+    $$PWD/scene/lights/environmentlight.h

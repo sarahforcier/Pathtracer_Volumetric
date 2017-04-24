@@ -2,8 +2,11 @@
 #include <globals.h>
 #include <scene/transform.h>
 #include <raytracing/intersection.h>
+#include <QImage>
+#include <QColor>
 
 class Intersection;
+class Scene;
 
 class Light
 {
@@ -13,26 +16,21 @@ class Light
         : transform(t), name(), isDelta(delta)
     {}
 
-    // Returns the light emitted along a ray that does
-    // not hit anything within the scene bounds.
-    // Necessary if we want to support things like environment
-    // maps, or other sources of light with infinite area.
-    // The default implementation for general lights returns
-    // no energy at all.
+
     virtual Color3f Le(const Ray &r) const;
 
     virtual Color3f L(const Intersection &isect, const Vector3f &w) const = 0;
 
-    virtual Color3f Sample_Li(const Intersection &ref, const Point2f &xi,
-                                                Vector3f *wi, Float *pdf) const = 0;
-
-
-    QString name; // For debugging
-    bool isDelta;
+    virtual Color3f Sample_Li(const Intersection &ref, const Point2f &xi, Vector3f *wi, Float *pdf) const = 0;
 
     virtual float Pdf_Li(const Intersection &ref, const Vector3f &wi) const = 0;
 
     virtual Point3f GetPosition() const;
+
+    virtual void Preprocess(const Scene &scene) = 0;
+
+    QString name; // For debugging
+    bool isDelta;
 
   protected:
     const Transform transform;
@@ -45,4 +43,17 @@ public:
     // Returns the light emitted from a point on the light's surface _isect_
     // along the direction _w_, which is leaving the surface.
     virtual Color3f L(const Intersection &isect, const Vector3f &w) const = 0;
+    virtual void Preprocess(const Scene &scene) {}
 };
+
+static Color3f GetImageColor(const Point2f &uv_coord, const QImage* const image)
+{
+    if(image)
+    {
+        int X = glm::min(image->width() * uv_coord.x, image->width() - 1.0f);
+        int Y = glm::min(image->height() * (1.0f - uv_coord.y), image->height() - 1.0f);
+        QColor color = image->pixel(X, Y);
+        return Color3f(color.red(), color.green(), color.blue())/255.0f;
+    }
+    return Color3f(1.f, 1.f, 1.f);
+}

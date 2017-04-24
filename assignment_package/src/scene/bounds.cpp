@@ -1,5 +1,12 @@
 #include "bounds.h"
 
+void Bounds3f::BoundingSphere(float* radius, Point3f* center) const
+{
+    Vector3f d = Diagonal();
+    *radius = glm::length(d)/2.f;
+    *center = min + Diagonal()/2.f;
+}
+
 bool Bounds3f::Intersect(const Ray &r, float* t) const
 {
     //TODO

@@ -23,6 +23,7 @@ Color3f SpotLight::Power() const {
     return I * TwoPi * (1.f - 0.5f * (cosFalloffStart + cosTotalWidth));
 }
 
+// returns color at isect coming in from direction w
 Color3f SpotLight::L(const Intersection &isect, const Vector3f &w) const
 {
     return I * Falloff(-w) / glm::length2(pLight - isect.point);
@@ -32,7 +33,8 @@ float SpotLight::Pdf_Li(const Intersection &ref, const Vector3f &wi) const {
     return 0.f;
 }
 
-Point3f SpotLight::GetPosition() const {
+Point3f SpotLight::GetPosition() const
+{
     return pLight;
 }
 

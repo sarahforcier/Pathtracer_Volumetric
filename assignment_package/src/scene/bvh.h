@@ -20,6 +20,7 @@ public:
              int maxPrimsInNode = 1);
     ~BVHAccel();
     bool Intersect(Ray &ray, Intersection *isect) const;
+    virtual Bounds3f WorldBound() const {return worldBound;}
 
 private:
     BVHBuildNode *recursiveBuild(
@@ -31,10 +32,9 @@ private:
 
     int flattenBVHTree(BVHBuildNode *node, int *offset);
 
-
-
     //Members
     const int maxPrimsInNode;
+    Bounds3f worldBound;
     std::vector<std::shared_ptr<Primitive>> primitives;
     BVHBuildNode *root = nullptr;
     std::vector<std::shared_ptr<LinearBVHNode>> nodes;

@@ -38,4 +38,9 @@ public:
     bool IntersectTr(Ray& ray, std::shared_ptr<Sampler> sampler, Intersection* isect, Color3f* Tr) const;
 
     void clearBVH();
+
+    const Bounds3f &WorldBound() const { return worldBound; }
+
+private:
+    Bounds3f worldBound;
 };

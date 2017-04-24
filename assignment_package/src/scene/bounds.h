@@ -17,6 +17,8 @@ public:
         : min(p), max(p)
     {}
 
+    void BoundingSphere(float* radius, Point3f* center) const;
+
     // Returns a vector representing the diagonal of the box
     Vector3f Diagonal() const { return max - min; }
 

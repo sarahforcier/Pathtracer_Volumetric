@@ -9,7 +9,18 @@
 
 
 Scene::Scene() : bvh(nullptr)
-{}
+{
+    worldBound = Bounds3f();
+    for(std::shared_ptr<Primitive> p : primitives)
+    {
+        worldBound = Union(worldBound, p->WorldBound());
+    }
+    for (std::shared_ptr<Light>light : lights) {
+        light->Preprocess(*this);
+//        if (light->flags & (int)LightFlags::Infinite)
+//            infiniteLights.push_back(light);
+    }
+}
 
 Scene::~Scene()
 {
