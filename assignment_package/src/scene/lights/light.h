@@ -2,13 +2,11 @@
 
 #include <globals.h>
 #include <scene/transform.h>
-#include <scene/scene.h>
 #include <raytracing/intersection.h>
 #include <QImage>
 #include <QColor>
 
 class Intersection;
-class Scene;
 
 enum type { DELTA, AREA, INFINIT };
 
@@ -30,7 +28,7 @@ class Light
 
     virtual Point3f GetPosition() const;
 
-    virtual void Preprocess(const Scene &scene) {}
+    virtual void Preprocess(Point3f center, float radius) {}
 
     bool isDelta() {return type == DELTA;}
 

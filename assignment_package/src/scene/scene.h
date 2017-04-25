@@ -41,6 +41,7 @@ public:
     void clearBVH();
 
     const Bounds3f &WorldBound() const { return worldBound; }
+    void ComputeBounds();
 
 private:
     Bounds3f worldBound;

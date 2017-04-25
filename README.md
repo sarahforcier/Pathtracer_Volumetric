@@ -21,10 +21,10 @@ Scattering Coefficient
 Lights
 --------------
 #### Spot Light
-![](./foggyspotlight_post.png)
+![](./foggyspotlight.png) ![](./foggyspotlight_post.png)
 
 #### Environment Light
-![](./envSphere.png)
+![](./teapot.png)
 
 Final Render 
 --------------

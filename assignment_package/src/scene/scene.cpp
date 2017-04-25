@@ -8,21 +8,24 @@
 #include <scene/lights/diffusearealight.h>
 
 
-Scene::Scene() : bvh(nullptr)
+Scene::Scene() : bvh(nullptr) {}
+
+Scene::~Scene()
 {
+    delete bvh;
+}
+
+void Scene::ComputeBounds() {
     worldBound = Bounds3f();
     for(std::shared_ptr<Primitive> p : primitives)
     {
         worldBound = Union(worldBound, p->WorldBound());
     }
+    Point3f p; float r;
+    worldBound.BoundingSphere(&r, &p);
     for(std::shared_ptr<Light> l : lights) {
-        l->Preprocess(*this);
+        l->Preprocess(p, r);
     }
-}
-
-Scene::~Scene()
-{
-    delete bvh;
 }
 
 void Scene::SetCamera(const Camera &c)

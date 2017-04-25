@@ -81,7 +81,7 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
                 }
             }
         }
-
+        scene.ComputeBounds();
         for(std::shared_ptr<Drawable> d : scene.drawables)
         {
             d->create();

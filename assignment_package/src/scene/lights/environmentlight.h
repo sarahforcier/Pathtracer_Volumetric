@@ -19,7 +19,7 @@ public:
 
     virtual float Pdf_Li(const Intersection &ref, const Vector3f &wi) const;
 
-    virtual void Preprocess(const Scene &scene);
+    virtual void Preprocess(Point3f center, float radius);
 
     // Member variables
     Point3f worldCenter;
