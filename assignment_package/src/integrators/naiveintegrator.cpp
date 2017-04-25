@@ -25,6 +25,8 @@ Color3f NaiveIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<Sample
             }
             else color =  Le + c * li * AbsDot(wiW, isect.normalGeometric)/pdf;
         }
+    } else {
+        for (auto light : scene.lights) color += light->Le(ray);
     }
     return color;
 }

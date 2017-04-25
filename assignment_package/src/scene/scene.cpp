@@ -15,10 +15,8 @@ Scene::Scene() : bvh(nullptr)
     {
         worldBound = Union(worldBound, p->WorldBound());
     }
-    for (std::shared_ptr<Light>light : lights) {
-        light->Preprocess(*this);
-//        if (light->flags & (int)LightFlags::Infinite)
-//            infiniteLights.push_back(light);
+    for(std::shared_ptr<Light> l : lights) {
+        l->Preprocess(*this);
     }
 }
 
@@ -36,7 +34,7 @@ void Scene::SetCamera(const Camera &c)
 
 bool Scene::Intersect(Ray &ray, Intersection *isect) const
 {
-    ray.medium = primitives[0]->mediumInterface->outside;
+//    ray.medium = primitives[0]->mediumInterface->outside;
     if(bvh) return bvh->Intersect(ray, isect);
     else {
         bool result = false;

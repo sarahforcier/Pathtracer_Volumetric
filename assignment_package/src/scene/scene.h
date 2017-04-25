@@ -4,6 +4,7 @@
 #include <scene/camera.h>
 #include <scene/lights/light.h>
 #include <scene/geometry/shape.h>
+
 #include "bvh.h"
 
 class Primitive;

@@ -30,7 +30,7 @@ Color3f DirectLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_p
 
             // is Shadowed?
             Intersection shad_Feel;
-            Ray shadowRay = (light->isDelta) ? isect.SpawnRayTo(light->GetPosition()) : isect.SpawnRay(wiW);
+            Ray shadowRay = (light->isDelta()) ? isect.SpawnRayTo(light->GetPosition()) : isect.SpawnRay(wiW);
             if (scene.Intersect(shadowRay, &shad_Feel)) {
                 if (shad_Feel.objectHit->light != scene.lights[index]) {
                     return Le;
@@ -40,6 +40,8 @@ Color3f DirectLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_p
             if (pdf == 0.f) color = Le;
             else color =  Le + f * li * AbsDot(wiW, isect.normalGeometric)/pdf;
         }
+    } else {
+        for (auto light : scene.lights) color += light->Le(ray);
     }
     return color;
 }

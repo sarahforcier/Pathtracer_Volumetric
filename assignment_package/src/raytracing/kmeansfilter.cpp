@@ -10,8 +10,8 @@ vector<float> kernel = vector<float> {0.38774, 0.24477, 0.06136};
 
 Color3f K_MeansFilter::Median(int a, int b) {
     vector<Color3f> arr;
-    Point2i start = Point2i(glm::max(0, a - 2), glm::max(0, b - 2));
-    Point2i end = Point2i(glm::min(a + 3, w), glm::min(b + 3, h));
+    Point2i start = Point2i(glm::max(0, a - radius), glm::max(0, b - radius));
+    Point2i end = Point2i(glm::min(a + radius + 1, w), glm::min(b + radius + 1, h));
 
     for (int i = start.x; i < end.x; i ++) {
         for (int j = start.y; j < end.y; j ++) {
@@ -30,22 +30,25 @@ Color3f K_MeansFilter::Median(int a, int b) {
 
 Color3f K_MeansFilter::Average(int a, int b) {
     Color3f total = Color3f(0.f);
-    Point2i start = Point2i(glm::max(0, a - 2), glm::max(0, b - 2));
-    Point2i end = Point2i(glm::min(a + 2, w - 1), glm::min(b + 2, h - 1));
+    Point2i start = Point2i(glm::max(0, a - 1), glm::max(0, b - 1));
+    Point2i end = Point2i(glm::min(a + 1, w - 1), glm::min(b + 1, h - 1));
 
+    float count = 0.f;
     for (int i = start.x; i <= end.x; i ++) {
         for (int j = start.y; j <= end.y; j ++) {
-            total += kernel[i-a] * kernel[j-b] * original[i][j];
+            float weight = kernel[i-a] * kernel[j-b];
+            count += weight;
+            total += weight * original[i][j];
         }
     }
 
-    return total;
+    return total / count;
 
 }
 
 K_MeansFilter::K_MeansFilter(vector<vector<Color3f>> p_colors,
-                             vector<vector<Color3f>> stdev,int num)
-    : original(p_colors), stdev(stdev)
+                             vector<vector<Color3f>> stdev,int num, int r)
+    : original(p_colors), stdev(stdev), radius(r)
 {
     w = p_colors.size(); h = p_colors[0].size();
     sampler = make_shared<Sampler>(num, 0);

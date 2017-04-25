@@ -60,7 +60,7 @@ SOURCES += \
     $$PWD/raytracing/kmeansfilter.cpp \
     $$PWD/scene/geometry/cylinder.cpp \
     $$PWD/scene/mediums/homogeneousmedium.cpp \
-    $$PWD/scene/lights/spotlight.cpp
+    $$PWD/scene/lights/spotlight.cpp \
     $$PWD/scene/lights/environmentlight.cpp
 
 

@@ -4,7 +4,7 @@ Color3f SpotLight::Sample_Li(const Intersection &ref, const Point2f &xi,
                                      Vector3f *wi, Float *pdf) const {
     *wi = glm::normalize(pLight - ref.point);
     *pdf = 1.f;
-    return I * Falloff(-*wi) / glm::length2(pLight - ref.point);
+    return 2.f * I * Falloff(-*wi) / glm::length(pLight - ref.point);
 }
 
 float SpotLight::Falloff(const Vector3f &w) const {
@@ -26,7 +26,7 @@ Color3f SpotLight::Power() const {
 // returns color at isect coming in from direction w
 Color3f SpotLight::L(const Intersection &isect, const Vector3f &w) const
 {
-    return I * Falloff(-w) / glm::length2(pLight - isect.point);
+    return 2.f * I * Falloff(-w) / glm::length(pLight - isect.point);
 }
 
 float SpotLight::Pdf_Li(const Intersection &ref, const Vector3f &wi) const {

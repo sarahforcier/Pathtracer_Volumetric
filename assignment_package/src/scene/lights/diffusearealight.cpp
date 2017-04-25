@@ -1,7 +1,8 @@
 #include "diffusearealight.h"
 
 Color3f DiffuseAreaLight::Sample_Li(const Intersection &ref, const Point2f &xi,
-                                     Vector3f *wi, Float *pdf) const {
+                                     Vector3f *wi, Float *pdf) const
+{
     Color3f c(0);
 
     // Get an Intersection on the surface of its Shape

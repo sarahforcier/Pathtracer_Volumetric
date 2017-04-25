@@ -1,52 +1,60 @@
 #include "environmentlight.h"
 
 Color3f EnvironmentLight::Le(const Ray &r) const
-{
-    Vector3f w = Vector3f(glm::normalize(transform.invT() * Vector4f(r.direction, 0.f)));
-    float phi = glm::atan2(w.y, w.x);
+{    
+    //Transform the ray
+    Ray r_loc = r.GetTransformedCopy(transform.invT());
+
+    float A = pow(r_loc.direction.x, 2.f) + pow(r_loc.direction.y, 2.f) + pow(r_loc.direction.z, 2.f);
+    float B = 2*(r_loc.direction.x*r_loc.origin.x + r_loc.direction.y * r_loc.origin.y + r_loc.direction.z * r_loc.origin.z);
+    float C = pow(r_loc.origin.x, 2.f) + pow(r_loc.origin.y, 2.f) + pow(r_loc.origin.z, 2.f) - 1.f;//Radius is 1.f
+    float discriminant = B*B - 4*A*C;
+
+    float t = (-B + sqrt(discriminant))/(2*A);
+
+    Point3f P = glm::vec3(r_loc.origin + t*r_loc.direction);
+
+    Vector3f w = P - worldCenter;
+    float phi = std::atan2(w.y, w.x);
     float u = Inv2Pi * (phi < 0 ? (phi + TwoPi) : phi);
     float v = InvPi * glm::acos(glm::clamp(w.z, -1.f, 1.f));
-    return Color3f(GetMaterialColor(Point2f(u,v), map));
+    return Color3f(GetImageColor(Point2f(u,v), map.get()));
+
 }
 
 Color3f EnvironmentLight::Sample_Li(const Intersection &ref, const Point2f &xi,
                                     Vector3f *wi, Float *pdf) const
 {
-    Point2f uv(); // TODO
-    if (mapPdf == 0.f) return Color3f(0.f);
+    Vector3f w = WarpFunctions::squareToHemisphereCosine(xi);
 
-    float phi = uv[0] * TwoPi, theta = uv[1] * Pi;
-    float cosTheta = glm::cos(theta), sinTheta = glm::sin(theta);
-    float cosPhi = glm::cos(phi), sinPhi = glm::sin(phi);
-    Vector4f w(sinTheta * cosPhi, sinTheta * sinPhi, cosTheta, 0.f);
-    *wi = Vector3f(glm::normalize(transform.T() * w));
+    // transform from TBN to world space
+    Matrix3x3 tangentToWorld = Matrix3x3(ref.tangent, ref.bitangent, ref.normalGeometric);
+    *wi = glm::normalize(tangentToWorld * w);
 
-    *pdf = (sinTheta == 0.f) ? 0.f : mapPdf / (TwoPi * Pi * sinTheta);
+    *pdf = WarpFunctions::squareToHemisphereCosinePDF(w);
 
-    return Color3f(GetMaterialColor(uv, map));
+    return L(ref, *wi);
 }
 
-Color3f EnvironmentLight::L(const Intersection &isect, const Vector3f &w) const
+Color3f EnvironmentLight::L(const Intersection &isect, const Vector3f &wi) const
 {
-    return Color3f(0.f);
+    Vector3f w = Vector3f(glm::normalize(transform.invT() * Vector4f(wi, 0.f)));
+    float phi = std::atan2(w.y, w.x);
+    float u = Inv2Pi * (phi < 0 ? (phi + TwoPi) : phi);
+    float v = InvPi * glm::acos(glm::clamp(w.z, -1.f, 1.f));
+    return Color3f(GetImageColor(Point2f(u,v), map.get()));
 }
 
 float EnvironmentLight::Pdf_Li(const Intersection &ref, const Vector3f &wi) const
 {
-    Vector3f w = Vector3f(glm::normalize(transform.invT() * Vector4f(wi, 0.f)));
-    float theta = glm::acos(glm::clamp(w.z, -1.f, 1.f));
-    float p = glm::atan2(w.y, w.x); phi = Inv2Pi * (p < 0 ? (p + TwoPi) : p);
-    float sinTheta = glm::sin(theta);
-    if (sinTheta == 0) return 0.f;
-    return distribution->Pdf(Point2f(phi * Inv2Pi, theta * InvPi)) / // TODO
-            (TwoPi * Pi * sinTheta);
+    Matrix3x3 tangentToWorld = Matrix3x3(ref.tangent, ref.bitangent, ref.normalGeometric);
+    Matrix3x3 worldToTangent = glm::transpose(tangentToWorld);
+
+    Vector3f w = glm::normalize(worldToTangent * wi);
+
+    return WarpFunctions::squareToHemisphereCosinePDF(w);
 }
 
-Color3f EnvironmentLight::Power() const {
-    return Pi * worldRadius * worldRadius * GetImageColor(Point2f(), map); //TODO
-}
-
-void EnvironmentLight::Preprocess(const Scene &scene)
-{
+void EnvironmentLight::Preprocess(const Scene &scene) {
     scene.WorldBound().BoundingSphere(&worldCenter, &worldRadius);
 }

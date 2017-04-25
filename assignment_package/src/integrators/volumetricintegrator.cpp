@@ -28,6 +28,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
 
     while (depth > 0) {
         Intersection isect;
+        ray.medium = scene.primitives[0]->mediumInterface->outside;
         bool hit = scene.Intersect(ray, &isect);
 
         // sample medium
@@ -59,7 +60,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
 
             if (phaseLight > 0.f) {
                 // Compute effect of visibility for light source sample
-                Ray light_ray = (light->isDelta) ? isect.SpawnRayTo(light->GetPosition()) : Ray(isect.point, wiW, ray.medium);
+                Ray light_ray = (light->isDelta()) ? isect.SpawnRayTo(light->GetPosition()) : Ray(isect.point, wiW, ray.medium);
                 Color3f Tr(1.f);
                 Intersection shadFeel;
                 if(scene.Intersect(light_ray, &shadFeel)) {
@@ -68,7 +69,7 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
                         // Update transmittance for current ray segment
                         if (light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
                     } else Li = Color3f(0.f);
-                } else if (light->isDelta && light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
+                } else if (light->isDelta() && light_ray.medium) Tr *= light_ray.medium->Tr(light_ray);
 
                 Li *= Tr;
 
@@ -135,17 +136,17 @@ Color3f VolumetricIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr<S
             float wg = 1.f, wf = 1.f;
             Color3f gColor(0.f);
             Intersection shad_Feel;
-            Ray shadowRay = (light->isDelta) ? isect.SpawnRayTo(light->GetPosition()) : isect.SpawnRay(wiW);
+            Ray shadowRay = (light->isDelta()) ? isect.SpawnRayTo(light->GetPosition()) : isect.SpawnRay(wiW);
             if (scene.Intersect(shadowRay, &shad_Feel)) {
                 if (pdf > 0.f && shad_Feel.objectHit->light == scene.lights[index]) {
                     wg = PowerHeuristic(1, pdf, 1, isect.bsdf->Pdf(woW, wiW));
                     gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
                 }
-            } else if (light->isDelta) gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
+            } else if (light->isDelta()) gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
 
             // bsdf
             Color3f fColor(0.f);
-            if (!light->isDelta) {
+            if (!light->isDelta()) {
                 Color3f f1 = isect.bsdf->Sample_f(woW, &wiW, sampler->Get2D(), &pdf);
                 Intersection isect_Test;
                 Ray indirectRay = isect.SpawnRay(glm::normalize(wiW));

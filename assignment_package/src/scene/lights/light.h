@@ -1,6 +1,8 @@
 #pragma once
+
 #include <globals.h>
 #include <scene/transform.h>
+#include <scene/scene.h>
 #include <raytracing/intersection.h>
 #include <QImage>
 #include <QColor>
@@ -8,14 +10,15 @@
 class Intersection;
 class Scene;
 
+enum type { DELTA, AREA, INFINIT };
+
 class Light
 {
   public:
     virtual ~Light(){}
-    Light(Transform t, bool delta)
-        : transform(t), name(), isDelta(delta)
+    Light(Transform t, int type)
+        : transform(t), name(), type(type)
     {}
-
 
     virtual Color3f Le(const Ray &r) const;
 
@@ -27,10 +30,12 @@ class Light
 
     virtual Point3f GetPosition() const;
 
-    virtual void Preprocess(const Scene &scene) = 0;
+    virtual void Preprocess(const Scene &scene) {}
+
+    bool isDelta() {return type == DELTA;}
 
     QString name; // For debugging
-    bool isDelta;
+    int type;
 
   protected:
     const Transform transform;
@@ -39,11 +44,11 @@ class Light
 class AreaLight : public Light
 {
 public:
-    AreaLight(const Transform &t) : Light(t, false){}
+    AreaLight(const Transform &t) : Light(t, AREA){}
     // Returns the light emitted from a point on the light's surface _isect_
     // along the direction _w_, which is leaving the surface.
     virtual Color3f L(const Intersection &isect, const Vector3f &w) const = 0;
-    virtual void Preprocess(const Scene &scene) {}
+//    virtual void Preprocess(const Scene &scene) {}
 };
 
 static Color3f GetImageColor(const Point2f &uv_coord, const QImage* const image)

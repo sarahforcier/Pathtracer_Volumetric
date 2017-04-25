@@ -58,8 +58,8 @@ private:
 
     bool makeBVH;
     int maxBVHPrims;
-    bool deNoise = true;
-    int buckets_deNoise = 256;
+    bool deNoise;
+    int buckets_deNoise;
 
 public:
     explicit MyGL(QWidget *parent = 0);

@@ -40,6 +40,8 @@ MyGL::MyGL(QWidget *parent)
     rubberband_offset = QPoint(0, 0);
     something_rendered = false;
     makeBVH = true;
+    deNoise = false;
+    buckets_deNoise = 256;
     maxBVHPrims = 1;
 }
 
@@ -488,7 +490,7 @@ void MyGL::completeRender()
 
     scene.film.WriteImage(output_filepath);
 
-    if (deNoise) scene.film.PostProcess(buckets_deNoise);
+    if (deNoise) scene.film.PostProcess(buckets_deNoise, 2);
 
     scene.film.WriteImage(output_filepath.append(QString("_post")));
     completeSFX.play();

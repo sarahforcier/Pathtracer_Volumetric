@@ -20,7 +20,7 @@ class K_MeansFilter
 {
 public:
     K_MeansFilter(std::vector<std::vector<Color3f>> p_colors,
-                  std::vector<std::vector<Color3f>> stdev,int num);
+                  std::vector<std::vector<Color3f>> stdev,int num, int r);
     ~K_MeansFilter() {}
     Color3f Median(int i, int j);
     Color3f Average(int i, int j);
@@ -33,4 +33,5 @@ private:
     vector<vector<int>> bucketLocation; // which bucket each sample belongs to
     int num_samples, w, h;
     shared_ptr<Sampler> sampler;
+    int radius;
 };

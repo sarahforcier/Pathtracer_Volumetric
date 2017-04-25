@@ -13,23 +13,25 @@
       },
       "primitives" : [
         {
-          "shape" : "SquarePlane",
-          "name" : "Floor",
-          "material" : "matteWhite",
+          "shape" : "Sphere",
+          "name" : "chromeSphere",
+          "medium" : ["", ""],
+          "material" : "chromeMirror",
           "transform" : {
-            "translate" : [0, -2.5, 0],
-            "rotate" : [-90, 0, 0],
-            "scale" : [10, 10, 1]
+            "translate" : [0, 2, 0],
+            "rotate" : [0,0,0],
+            "scale" : [1.5,1.5,1.5]
           }
         },
         {
-          "shape" : "Sphere",
-          "name" : "chromeSphere",
-          "material" : "chromeMirror",
+          "shape" : "SquarePlane",
+          "name" : "Green Wall",
+          "medium" : ["", ""],
+          "material" : "matteGreen",
           "transform" : {
-            "translate" : [0, -1.15, 2],
-            "rotate" : [0,0,0],
-            "scale" : [1.5,1.5,1.5]
+            "translate" : [-5, 2.5, 0],
+            "rotate" : [0,90,0],
+            "scale" : [10, 10, 1]
           }
         }
       ],
@@ -37,11 +39,12 @@
         {
           "name" : "Light Source",
           "type" : "EnvironmentLight",
+          "medium" : ["", ""],
           "lightColor" : [17,12,4],
           "intensity" : 2,
           "transform" : {
             "translate" : [0,0,0],
-            "rotate" : [0,0,0],
+            "rotate" : [90,0,0],
             "scale" : [1, 1, 1]
           },
           "map": "sphereMap.jpg"
@@ -49,16 +52,15 @@
       ],
       "materials" : [
         {
-          "type" : "MatteMaterial",
-          "name" : "matteWhite",
-            "Kd" : [0.1, 0.1, 0.1],
-          "sigma": 0
-        },
-        {
           "type": "MirrorMaterial",
           "name": "chromeMirror",
-          "Kr": [1, 1, 1],
-          "roughness": 0.05
+          "Kr": [1, 1, 1]
+        },
+        {
+          "type" : "MatteMaterial",
+          "name" : "matteGreen",
+          "Kd" : [0.14, 0.45, 0.091],
+          "sigma": 0
         }
       ]
     }
