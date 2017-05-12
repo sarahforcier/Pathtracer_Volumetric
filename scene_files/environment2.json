@@ -1,0 +1,188 @@
+{
+  "frames" :[
+    {
+    "frameNumber" : 0,
+    "scene" : {
+      "camera" : {
+        "target" : [0, 2, 0],
+        "eye" : [0, 5.5, -30],
+        "worldUp" : [0, 1, 0],
+        "fov" : 19.5,
+        "width" : 600,
+        "height": 600
+      },
+      "csg" : [
+        {
+          "shapes" : ["Sphere", "Sphere"],
+          "name" : "constructiveGeoDiff",
+          "names" : ["sphere1", "sphere1"],
+          "materials" : ["chromeMirror", "chromeMirror"],
+          "operators" : ["intersection", "shape", "shape"],
+          "transforms" : [
+            {
+              "translate" : [0, 2, 30],
+                "rotate" : [0, 0, 0],
+                "scale" : [3,3,3]
+            },
+            {
+          "translate" : [0,-2,30],
+                "rotate" : [0, 0, 0],
+                "scale" : [2.65, 2.65, 2.65]
+            }
+          ]
+        },
+        {
+          "shapes" : ["Sphere", "Sphere"],
+          "name" : "constructiveGeoDiff",
+          "names" : ["sphere1", "sphere1"],
+          "materials" : ["chromeMirror", "chromeMirror"],
+          "operators" : ["intersection", "shape", "shape"],
+          "transforms" : [
+            {
+              "translate" : [0, 2, 30],
+                "rotate" : [0, 0, 0],
+                "scale" : [3,3,3]
+            },
+            {
+          "translate" : [0,6,30],
+                "rotate" : [0, 0, 0],
+                "scale" : [2.65, 2.65, 2.65]
+            }
+          ]
+        },
+        {
+          "shapes" : ["Sphere", "Sphere"],
+          "name" : "constructiveGeoDiff",
+          "names" : ["sphere1", "sphere1"],
+          "materials" : ["chromeMirror", "chromeMirror"],
+          "operators" : ["intersection", "shape", "shape"],
+          "transforms" : [
+            {
+              "translate" : [0, 2, 30],
+                "rotate" : [0, 0, 0],
+                "scale" : [3,3,3]
+            },
+            {
+          "translate" : [-4,2,30],
+                "rotate" : [0, 0, 0],
+                "scale" : [2.65, 2.65, 2.65]
+            }
+          ]
+        },
+        {
+          "shapes" : ["Sphere", "Sphere"],
+          "name" : "constructiveGeoDiff",
+          "names" : ["sphere1", "sphere1"],
+          "materials" : ["chromeMirror", "chromeMirror"],
+          "operators" : ["intersection", "shape", "shape"],
+          "transforms" : [
+            {
+              "translate" : [0, 2, 30],
+                "rotate" : [0, 0, 0],
+                "scale" : [3,3,3]
+            },
+            {
+          "translate" : [0, 2, 34],
+                "rotate" : [0, 0, 0],
+                "scale" : [2.65, 2.65, 2.65]
+            }
+          ]
+        },
+        {
+          "shapes" : ["Sphere", "Sphere"],
+          "name" : "constructiveGeoDiff",
+          "names" : ["sphere1", "sphere1"],
+          "materials" : ["chromeMirror", "chromeMirror"],
+          "operators" : ["intersection", "shape", "shape"],
+          "transforms" : [
+            {
+              "translate" : [0, 2, 30],
+                "rotate" : [0, 0, 0],
+                "scale" : [3,3,3]
+            },
+            {
+          "translate" : [0,2,26],
+                "rotate" : [0, 0, 0],
+                "scale" : [2.65, 2.65, 2.65]
+            }
+          ]
+        },
+        {
+          "shapes" : ["Sphere", "Sphere"],
+          "name" : "constructiveGeoDiff",
+          "names" : ["sphere1", "sphere1"],
+          "materials" : ["chromeMirror", "chromeMirror"],
+          "operators" : ["intersection", "shape", "shape"],
+          "transforms" : [
+            {
+              "translate" : [0, 2, 30],
+                "rotate" : [0, 0, 0],
+                "scale" : [3,3,3]
+            },
+            {
+          "translate" : [4,2,30],
+                "rotate" : [0, 0, 0],
+                "scale" : [2.65, 2.65, 2.65]
+            }
+          ]
+        }
+      ],
+      "primitives" : [
+        {
+          "shape" : "Sphere",
+          "name" : "Back Wall",
+          "medium" : ["", ""],
+          "material" : "texturedMaterial",
+          "transform" : {
+            "translate" : [0,2.5,-40],
+            "rotate" : [0,180,0],
+            "scale" : [1,1, 1]
+          }
+        }
+      ],
+      "lights" : [
+        {
+          "name" : "Light Source",
+          "type" : "EnvironmentLight",
+          "medium" : ["", ""],
+          "lightColor" : [17,12,4],
+          "intensity" : 2,
+          "transform" : {
+            "translate" : [0,0,0],
+            "rotate" : [90,0,0],
+            "scale" : [1, 1, 1]
+          },
+          "map": "city.jpg"
+        }
+      ],
+      "materials" : [
+        {
+          "type": "MirrorMaterial",
+          "name": "chromeMirror",
+          "Kr": [1, 1, 1], 
+          "roughness" : 0.05
+        },
+        {
+          "type" : "MatteMaterial",
+          "name" : "matteWhite",
+            "Kd" : [0.85, 0.81, 0.85],
+          "sigma": 0
+        },
+        {
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterial",
+          "Kt": [0.9, 0.9, 1],
+          "Kr": [1, 1, 0.2],
+          "eta": 1.55
+        },
+        {
+          "type": "MatteMaterial",
+          "name": "texturedMaterial",
+          "Kd": [1, 1, 1],
+          "textureMap": "tiles.jpg"
+        }
+      ]
+    }
+  }
+]
+}

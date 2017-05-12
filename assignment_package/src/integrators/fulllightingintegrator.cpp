@@ -17,11 +17,13 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
     while (depth > 0) {
         Intersection isect;
         if (!scene.Intersect(ray, &isect)) {
-            for (auto light : scene.lights) color += light->Le(ray);
+            for (auto light : scene.lights) color += light->Le(ray); // environment lighting
             break;
         }
         Vector3f woW = - ray.direction;
         if (!isect.objectHit->GetMaterial()) {
+            // we only handle emission on first bounce (otherwise it would be handled in previous direct lighting call)
+            // and with specular surfaces, whose dirac delta function prevents the direct lighting from being computed
             if ((BSDF_SPECULAR & type) != 0 || depth == recursionLimit) color += energy * isect.Le(woW);
             break;
         }
@@ -38,7 +40,7 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
         Intersection shad_Feel;
         Ray shadowRay = (light->isDelta()) ? isect.SpawnRayTo(light->GetPosition()) : isect.SpawnRay(wiW);
         if (scene.Intersect(shadowRay, &shad_Feel)) {
-            if (pdf > 0.f && shad_Feel.objectHit->light == scene.lights[index]) {
+            if (pdf > 0.f && shad_Feel.objectHit->light == scene.lights[index]) { // only handle selected light (otherwise double counting light contribution)
                 wg = PowerHeuristic(1, pdf, 1, isect.bsdf->Pdf(woW, wiW));
                 gColor = f2 * li2 * AbsDot(wiW, isect.normalGeometric)/pdf;
             }
@@ -57,7 +59,7 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
             wf = PowerHeuristic(1, pdf, 1, light->Pdf_Li(isect, wiW));
         }
 
-        Color3f d_color = float(num) * (wf * fColor + wg * gColor);
+        Color3f d_color = float(num) * (wf * fColor + wg * gColor); // sample lights at a frequency of 1/num so must scale up contribution
 
         color += energy * d_color;
 
@@ -73,7 +75,7 @@ Color3f FullLightingIntegrator::Li(Ray &ray, const Scene &scene, std::shared_ptr
         float E = glm::max(energy.x, glm::max(energy.y, energy.z));
         if (depth < 3) {
             if (E < q) break;
-            energy /= (1 - q);
+            energy /= (1 - q); // scale energy up to account for contribution of paths that were terminated early
         }
 
         // loop updates

@@ -4,12 +4,16 @@
 #include "cube.h"
 #include "disc.h"
 #include "mesh.h"
+#include "cylinder.h"
 
 // I've put all of the Shape::create() functions in here to separate the OpenGL pre-visualization
 // code from the path tracer code
 
 static const int SPH_IDX_COUNT = 2280;  // 760 tris * 3
 static const int SPH_VERT_COUNT = 382;
+
+static const int CYL_IDX_COUNT = 1140;  // 760 tris * 3
+static const int CYL_VERT_COUNT = 380;
 
 static const int CUB_IDX_COUNT = 36;
 static const int CUB_VERT_COUNT = 24;
@@ -140,6 +144,82 @@ void Sphere::create()
     bufNor.bind();
     bufNor.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufNor.allocate(sph_vert_nor, SPH_VERT_COUNT * sizeof(glm::vec3));
+}
+
+void createCylinderVertexPositions(glm::vec3 (&cyl_vert_pos)[CYL_VERT_COUNT])
+{
+    float inc = TwoPi/190.f;
+    float angle = 0.f;
+    for (int i = 0; i < 380; i += 2) {
+        cyl_vert_pos[i] = glm::vec3(glm::cos(angle), -1.f, glm::sin(angle));
+        cyl_vert_pos[i + 1] = glm::vec3(glm::cos(angle), 1.f, glm::sin(angle));
+        angle += inc;
+    }
+}
+
+
+void createCylinderVertexNormals(glm::vec3 (&cyl_vert_nor)[CYL_VERT_COUNT])
+{
+    float inc = TwoPi/190.f;
+    float angle = 0.f;
+    for (int i = 0; i < 380; i += 2) {
+        cyl_vert_nor[i] = glm::vec3(glm::cos(angle), 0.f, glm::sin(angle));
+        cyl_vert_nor[i + 1] = glm::vec3(glm::cos(angle), 0.f, glm::sin(angle));
+        angle += inc;
+    }
+}
+
+
+void createCylinderIndices(GLuint (&cyl_idx)[CYL_IDX_COUNT])
+{
+    int index = 0;
+    for (int i = 0; i < CYL_IDX_COUNT; i += 6) {
+        cyl_idx[i] = index;
+        cyl_idx[i+1] = index + 1;
+        cyl_idx[i+2] = index + 2;
+        cyl_idx[i+3] = index + 2;
+        cyl_idx[i+4] = index + 1;
+        cyl_idx[i+5] = index + 3;
+        index += 2;
+    }
+}
+
+void Cylinder::create()
+{
+    GLuint cyl_idx[CYL_IDX_COUNT];
+    glm::vec3 cyl_vert_pos[CYL_VERT_COUNT];
+    glm::vec3 cyl_vert_nor[CYL_VERT_COUNT];
+    glm::vec3 cyl_vert_col[CYL_VERT_COUNT];
+
+    createCylinderVertexPositions(cyl_vert_pos);
+    createCylinderVertexNormals(cyl_vert_nor);
+    createCylinderIndices(cyl_idx);
+    Color3f color(colorRNG.nextFloat(), colorRNG.nextFloat(), colorRNG.nextFloat());
+    for (int i = 0; i < CYL_VERT_COUNT; i++) {
+        cyl_vert_col[i] = color;
+    }
+
+    count = CYL_IDX_COUNT;
+
+    bufIdx.create();
+    bufIdx.bind();
+    bufIdx.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    bufIdx.allocate(cyl_idx, CYL_IDX_COUNT * sizeof(GLuint));
+
+    bufPos.create();
+    bufPos.bind();
+    bufPos.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    bufPos.allocate(cyl_vert_pos, CYL_VERT_COUNT * sizeof(glm::vec3));
+
+    bufCol.create();
+    bufCol.bind();
+    bufCol.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    bufCol.allocate(cyl_vert_col, CYL_VERT_COUNT * sizeof(glm::vec3));
+
+    bufNor.create();
+    bufNor.bind();
+    bufNor.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    bufNor.allocate(cyl_vert_nor, CYL_VERT_COUNT * sizeof(glm::vec3));
 }
 
 void SquarePlane::create()

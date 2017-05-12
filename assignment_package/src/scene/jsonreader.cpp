@@ -1,6 +1,7 @@
 #include <scene/jsonreader.h>
 #include <scene/geometry/cube.h>
 #include <scene/geometry/sphere.h>
+#include <scene/geometry/cylinder.h>
 #include <scene/geometry/mesh.h>
 #include <scene/geometry/disc.h>
 #include <scene/geometry/squareplane.h>
@@ -119,6 +120,7 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
 
         QString meshName("Unnamed Mesh");
         if(geometry.contains(QString("name"))) meshName = geometry["name"].toString();
+        meshName.append(QString("'s Triangle"));
         for(auto triangle : mesh->faces)
         {
             auto primitive = std::make_shared<Primitive>(triangle);
@@ -144,7 +146,7 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
                 }
                 primitive->mediumInterface = std::make_shared<MediumInterface>(medium1, medium2);
             }
-            primitive->name = meshName.append(QString("'s Triangle"));
+            primitive->name = meshName;
             (*primitives).append(primitive);
         }
         (*drawables).append(mesh);
@@ -152,6 +154,10 @@ bool JSONReader::LoadGeometry(QJsonObject &geometry, QMap<QString, std::shared_p
     else if(QString::compare(type, QString("Sphere")) == 0)
     {
         shape = std::make_shared<Sphere>();
+    }
+    else if(QString::compare(type, QString("Cylinder")) == 0)
+    {
+        shape = std::make_shared<Cylinder>();
     }
     else if(QString::compare(type, QString("SquarePlane")) == 0)
     {
@@ -262,6 +268,10 @@ bool JSONReader::LoadCSG(QJsonObject &csgObj, QMap<QString, std::shared_ptr<Mate
             {
                 shape = std::make_shared<Sphere>();
             }
+            if(QString::compare(type, QString("Cylinder")) == 0)
+            {
+                shape = std::make_shared<Cylinder>();
+            }
             else if(QString::compare(type, QString("SquarePlane")) == 0)
             {
                 shape = std::make_shared<SquarePlane>();
@@ -343,6 +353,10 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
         else if(QString::compare(type, QString("Sphere")) == 0)
         {
             shape = std::make_shared<Sphere>();
+        }
+        else if(QString::compare(type, QString("Cylinder")) == 0)
+        {
+            shape = std::make_shared<Cylinder>();
         }
         else if(QString::compare(type, QString("SquarePlane")) == 0)
         {
